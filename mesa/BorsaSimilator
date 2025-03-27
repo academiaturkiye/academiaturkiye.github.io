@@ -1,0 +1,74 @@
+from mesa import Agent, Model
+from mesa.time import RandomActivation
+from mesa.datacollection import DataCollector
+import random
+
+class TraderAgent(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.value = 300  # Başlangıç hisse fiyatı
+        self.held = []  # Tutulan hisseler (alış fiyatı, miktar)
+        self.total_held = 0  # Toplam hisse miktarı
+        self.profit = 0  # Kâr/Zarar
+        self.sell_profit = None
+    
+    def step(self):
+        self.update_stock_price()
+    
+    def update_stock_price(self):
+        to_add = int(random.gauss(10, 100 * self.model.market_volatility))
+        if random.random() <= 0.5:
+            self.value = max(0, self.value - to_add)  # Değer sıfırın altına inemez
+        else:
+            self.value += to_add
+    
+    def buy(self, amount):
+        self.held.append((self.value, amount))
+        self.total_held += amount
+    
+    def sell(self, amount):
+        if amount > self.total_held:
+            amount = self.total_held
+        internal_sell_amount = amount
+        
+        while internal_sell_amount > 0 and self.held:
+            bought_price, volume = self.held[0]
+            profit_diff = volume * (self.value - bought_price)
+            self.sell_profit = profit_diff >= 0
+            self.profit += profit_diff
+            
+            if volume > internal_sell_amount:
+                self.held[0] = (bought_price, volume - internal_sell_amount)
+                internal_sell_amount = 0
+            else:
+                self.held.pop(0)
+                internal_sell_amount -= volume
+                
+        self.total_held -= amount
+    
+class StonkModel(Model):
+    def __init__(self, num_agents=1, market_volatility=0.1):
+        self.num_agents = num_agents
+        self.market_volatility = market_volatility
+        self.schedule = RandomActivation(self)
+        
+        for i in range(num_agents):
+            agent = TraderAgent(i, self)
+            self.schedule.add(agent)
+        
+        self.datacollector = DataCollector(
+            model_reporters={"Stock Price": lambda m: m.schedule.agents[0].value,
+                             "Profit": lambda m: m.schedule.agents[0].profit}
+        )
+    
+    def step(self):
+        self.datacollector.collect(self)
+        self.schedule.step()
+
+# Modeli çalıştırma örneği
+model = StonkModel()
+for i in range(100):
+    model.step()
+
+data = model.datacollector.get_model_vars_dataframe()
+print(data.tail())
