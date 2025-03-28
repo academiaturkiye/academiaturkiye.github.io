@@ -1,0 +1,57 @@
+##################################################
+#Netlogo kodu
+
+    #to do-plots
+    #  set-current-plot "stonk"
+    #  create-temporary-plot-pen "stonkplot"
+    #  ifelse profit? [set-plot-pen-color green][set-plot-pen-color red]
+    #  plot value
+    #end
+
+###################################################
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from mesa import Model
+from mesa.datacollection import DataCollector
+
+class StonkModel(Model):
+    def __init__(self):
+        self.value = 300  # Başlangıç hisse değeri
+        self.profit = None  # Kar/Zarar bilgisi
+        self.datacollector = DataCollector(
+            model_reporters={"Stock Value": "value", "Profit": "profit"}
+        )
+    
+    def step(self):
+        price_change = self.random.gauss(10, 100)  # Normal dağılıma göre fiyat değişimi
+        new_value = self.value + price_change
+        
+        if new_value < self.value:
+            self.profit = False  # Kırmızı (Zarar)
+        else:
+            self.profit = True  # Yeşil (Kar)
+        
+        self.value = max(0, new_value)  # Değer sıfırın altına inemez
+        self.datacollector.collect(self)
+
+# Modeli çalıştırma ve verileri toplama
+model = StonkModel()
+values = []
+profits = []
+
+for i in range(100):  # 100 adım simüle et
+    model.step()
+    values.append(model.value)
+    profits.append(model.profit)
+
+# Veriyi çizme
+colors = ['green' if p else 'red' for p in profits]
+plt.figure(figsize=(10, 5))
+plt.scatter(range(100), values, c=colors, alpha=0.7)
+plt.plot(values, linestyle='dashed', alpha=0.5)
+plt.title("Stock Value Over Time")
+plt.xlabel("Time Step")
+plt.ylabel("Stock Value")
+plt.grid()
+plt.show()
