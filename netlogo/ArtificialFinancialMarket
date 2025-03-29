@@ -1,0 +1,141 @@
+patches-own [my-sentiment ;; Each trader can have a positive sentiment (+1), in which case he is 'bullish',
+                          ;; that is, he beleives the market will rise or he can have a 
+                           ;; negative sentiment (-1) in which case he is 'bearish', that is, he beleives the market will fall.
+                          ;; if the sentiment is positive the trader buys one share if it is negative he sells
+                          ;; one share.
+             number-of-shares ;; Number of shares that each trader has (if negative it implies that the
+                              ;; trader is 'short' (we assume that there are no limits to short selling).
+             opinion-vol  ;; Volatility in a trader's own interpretation of the news.
+             propensity-to-sentiment-contagion ;; Propensity to be influenced by friends sentiments
+                                                ;; regarding the news qualitative nature.
+             base-propensity-to-sentiment-contagion
+             news-sensitivity ;; Sensitivity that the traders have to the news qualitative meaning.
+             indicator ;; Allows the counting of the traders.
+             ]
+
+globals [log-price
+         returns
+         news-qualitative-meaning  ;; There is a set of news concerning the market that reaches all traders
+                                   ;; these news are attributed a qualitative meaning
+         number-of-traders
+         volatility-indicator
+         ] 
+
+to setup
+ca
+ask patches [
+             set number-of-shares 1 ;; Each trader starts with one unit of shares
+             set opinion-vol sigma + random-int-or-float 0.1
+             set news-sensitivity (random-int-or-float max-news-sensitivity)
+             set base-propensity-to-sentiment-contagion (random-int-or-float max-base-propensity-to-sentiment-contagion)
+             set propensity-to-sentiment-contagion base-propensity-to-sentiment-contagion
+             set indicator 1
+             ]
+set log-price 0
+end
+
+
+to go
+news-arrival
+agent-decision
+market-clearing
+update-market-sentiment
+compute-volatility-indicator
+do-plot
+end
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+; News Arrival mechanism ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+to news-arrival
+ifelse (random-normal 0 1) > 0
+         [set news-qualitative-meaning 1]
+         [set news-qualitative-meaning -1]
+end
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Agent's decision rule ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; The agent's (in this case trader) sentiment is positive (+1) and he buys if
+; the friends sentiment regarding the market, multiplied by the agent's propensity to be contagiated by
+; the sentiment of his friends, plus the news multiplied by the agent's news sensitivity, plus a random
+; term is larger than zero, otherwise, the agent's sentiment is set (-1) and the agent sells.
+to agent-decision
+    ask patches [
+                ifelse ((propensity-to-sentiment-contagion * nsum4 (my-sentiment) + news-sensitivity * news-qualitative-meaning + random-normal miu opinion-vol) > 0)
+                   [set my-sentiment 1
+                   set number-of-shares number-of-shares + 1] ;; Buy
+                   [set my-sentiment -1
+                    set number-of-shares number-of-shares - 1] ;; Sell
+                    ]
+; If the agent's sentiment is positive the colour is set green, if he is negative it is set red.
+ask patches [if my-sentiment = 1
+                 [set pcolor green]
+             if my-sentiment = -1
+                 [set pcolor red]
+                 ]
+end
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Market clearing mechanism ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+to market-clearing
+set log-price (log-price + returns)
+set number-of-traders sum values-from patches [indicator]
+set returns sum values-from patches [my-sentiment] / number-of-traders
+end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Update market sentiment;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to update-market-sentiment
+ask patches [; A good(bad) news confirmed by a market movement in the direction of that news
+             ; leads to a greater propensity to sentiment contagion. If the good(bad) news is not
+             ; confirmed by a market movement in the same direction the propensity to sentiment contagion
+             ; decreases.
+             if (returns > 0) and (news-qualitative-meaning > 0)
+                [set propensity-to-sentiment-contagion base-propensity-to-sentiment-contagion + returns]
+             if (returns > 0) and (news-qualitative-meaning < 0)
+                [set propensity-to-sentiment-contagion base-propensity-to-sentiment-contagion - returns]
+             if (returns < 0) and (news-qualitative-meaning < 0)
+                [set propensity-to-sentiment-contagion base-propensity-to-sentiment-contagion - returns]
+             if (returns < 0) and (news-qualitative-meaning > 0)
+                [set propensity-to-sentiment-contagion base-propensity-to-sentiment-contagion + returns]
+
+                ]       
+end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; Deviations to EMH ;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+to compute-volatility-indicator
+set volatility-indicator abs(returns)
+end
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to do-plot
+set-current-plot "Log-price"
+set-current-plot-pen "log-price"
+plot log-price
+set-current-plot "Returns"
+set-current-plot-pen "returns"
+plot returns
+set-current-plot "Volatility"
+set-current-plot-pen "volatility"
+plot volatility-indicator
+
+end
