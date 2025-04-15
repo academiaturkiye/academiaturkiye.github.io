@@ -1,0 +1,259 @@
+
+import random
+from datetime import datetime
+from typing import Dict, Type
+
+class BaseAgent(mesa.Agent):
+    """15 özellikli temel ajan sınıfı"""
+    def __init__(self, model):
+        super().__init__(model)
+        
+        # 15 Temel Özellik
+        self.created_at = datetime.now()  # 1. Oluşturulma zamanı
+        self.is_active = True            # 2. Aktif/pasif durumu
+        self.energy = 100                # 3. Enerji seviyesi
+        self.age = 0                     # 4. Yaş (adım sayacı)
+        self.speed = random.uniform(0.5, 2.0)  # 5. Hareket hızı
+        self.color = "#" + "".join(random.choices("0123456789ABCDEF", k=6))  # 6. Rastgele renk
+        self.memory = []                 # 7. Bellek listesi
+        self.social_status = random.choice(["low", "medium", "high"])  # 8. Sosyal statü
+        self.health = 100                # 9. Sağlık puanı
+        self.stress_level = 0            # 10. Stres seviyesi
+        self.knowledge = random.randint(1, 100)  # 11. Bilgi düzeyi
+        self.productivity = 80           # 12. Verimlilik
+        self.location = (0, 0)           # 13. Konum bilgisi
+        self.wealth = random.randint(10, 1000)  # 14. Servet
+        self.reputation = 50             # 15. İtibar puanı
+    
+    def update_age(self):
+        """Her adımda yaşı artır"""
+        self.age += 1
+    
+    def log(self, message):
+        print(f"[{self.__class__.__name__} {self.unique_id}] {message}")
+
+# 10 Özel Ajan Sınıfı (Her birinde 5 ek özellik)
+class Worker(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        # 5 Ek Özellik
+        self.skill = random.choice(["carpenter", "engineer", "designer"])  # 1
+        self.salary = random.randint(3000, 10000)                          # 2
+        self.union_member = random.choice([True, False])                   # 3
+        self.work_experience = random.randint(1, 20)                       # 4
+        self.tools = ["laptop", "notebook"]                                # 5
+    
+    def step(self):
+        self.productivity -= random.randint(1, 10)
+        self.log(f"Çalışıyor (Verimlilik: {self.productivity})")
+
+class Student(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.major = random.choice(["CS", "Physics", "Art"])               # 1
+        self.gpa = round(random.uniform(2.0, 4.0), 2)                      # 2
+        self.student_debt = random.randint(0, 100000)                      # 3
+        self.study_hours = 0                                               # 4
+        self.extracurriculars = []                                         # 5
+    
+    def step(self):
+        self.knowledge += 5
+        self.log(f"Çalışıyor (Bilgi: {self.knowledge})")
+
+# Diğer 8 sınıf örneği (kısaltılmış)
+class Doctor(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.specialty = random.choice(["Cardio", "Neuro", "Pediatric"])   # 1
+        self.license_number = "MD-" + str(random.randint(1000,9999))      # 2
+        self.patients = []                                                # 3
+        self.years_experience = random.randint(1, 40)                     # 4
+        self.hospital = "City General"                                    # 5
+
+    def step(self):
+        print(f"Doktora çalışıyor: {self.specialty}")
+
+class Athlete(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.sport = random.choice(["Soccer", "Basketball", "Swimming"])  # 1
+        self.stamina = 100                                                # 2
+        self.team = "Team " + chr(65 + random.randint(0, 25))             # 3
+        self.championships = 0                                            # 4
+        self.trainer = "Coach Smith"                                      # 5
+
+    def step(self):
+        print(f"Sporcu çalışıyor: {self.sport}")
+
+class AIAgent(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.algorithm = random.choice(["CNN", "RNN", "Transformer"])     # 1
+        self.training_data = 1000                                         # 2
+        self.accuracy = round(random.uniform(0.7, 0.99), 4)               # 3
+        self.hardware = "GPU"                                             # 4
+        self.version = "1." + str(random.randint(0, 9))                   # 5
+    def step(self):
+        print(f"AI çalışıyor: {self.algorithm}")  
+
+class Politician(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.party = random.choice(["Democrat", "Republican", "Green"])   # 1
+        self.vote_count = random.randint(100, 10000)                      # 2
+        self.corruption_level = random.randint(1, 10)                     # 3
+        self.district = random.randint(1, 50)                             # 4
+        self.slogan = "Vote for me!"                                      # 5
+    def step(self):
+        print(f"Politiği çalışıyor: {self.party}")
+
+class Artist(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.art_type = random.choice(["Painter", "Musician", "Actor"])   # 1
+        self.famous_work = "Untitled " + str(random.randint(1, 100))      # 2
+        self.creative_energy = 100                                        # 3
+        self.exhibitions = 0                                              # 4
+        self.style = random.choice(["Modern", "Classic", "Abstract"])     # 5
+    def step(self):
+        print(f"Müzikçü çalışıyor: {self.art_type}")
+
+class Farmer(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.crop_type = random.choice(["Wheat", "Corn", "Soybean"])      # 1
+        self.land_size = random.randint(1, 100)                           # 2
+        self.equipment = ["Tractor", "Irrigation"]                        # 3
+        self.yearly_yield = 0                                             # 4
+        self.organic = random.choice([True, False])                       # 5
+    def step(self):
+        print(f"Farmer çalışıyor: {self.crop_type}")
+
+class Soldier(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.rank = random.choice(["Private", "Sergeant", "Captain"])     # 1
+        self.branch = random.choice(["Army", "Navy", "Air Force"])        # 2
+        self.combat_experience = 0                                        # 3
+        self.unit = "Alpha " + str(random.randint(1, 10))                 # 4
+        self.active_duty = True                                           # 5
+    def step(self):
+        print(f"Soldier çalışıyor: {self.rank}")
+
+class Scientist(BaseAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.field = random.choice(["Biology", "Physics", "Chemistry"])   # 1
+        self.publications = random.randint(1, 100)                        # 2
+        self.lab = "Lab " + str(random.randint(1, 10))                    # 3
+        self.experiments = []                                             # 4
+        self.nobel_prize = random.choice([True, False])                   # 5
+    def step(self):
+        print(f"Scientist çalışıyor: {self.field}")
+
+
+
+
+class SimulationModel(mesa.Model):
+
+    def __init__(
+        self, 
+        worker_count: int = 30,
+        student_count: int = 20,
+        doctor_count: int = 15,
+        athlete_count: int = 10,
+        ai_agent_count: int = 10,
+        politician_count: int = 10,
+        artist_count: int = 10,
+        farmer_count: int = 10,
+        soldier_count: int = 10,
+        scientist_count: int = 10,
+    ):
+        super().__init__()
+       
+
+        # Sınıf-sayı eşleştirmesi
+        agent_counts: Dict[Type[mesa.Agent], int] = {            
+            Worker: worker_count,
+            Student: student_count,
+            Doctor: doctor_count,
+            Athlete: athlete_count,
+            AIAgent: ai_agent_count,
+            Politician: politician_count,
+            Artist: artist_count,
+            Farmer: farmer_count,
+            Soldier: soldier_count,
+            Scientist: scientist_count,
+        }
+        
+        # Toplam ajan kontrolü
+        total_agents = sum(agent_counts.values())
+        print(f"Toplam ajan sayısı: {total_agents}")
+        
+        # Ajanları oluştur
+        agent_id = 0
+        for agent_class, count in agent_counts.items():
+            for _ in range(count):
+                agent = agent_class(self)
+                self.agents.add(agent)
+                agent_id += 1
+                print(f"{agent_class.__name__} {agent_id} oluşturuldu")
+
+    
+    #unique_id ile ajanları bulma, sınıf bilgisi ve özelliklerini görüntüleme
+    def find_agent(self, agent_id):
+        """unique_id ile ajan bulma"""
+        for agent in self.agents:
+            if agent.unique_id == agent_id:
+                print(f"Ajan bulundu: {agent.unique_id}")
+                return agent        
+        print(f"Ajan bulunamadı.")
+        return None
+            
+
+    def print_agent_info(self, agent):
+        """Ajanın tüm özelliklerini yazdır"""
+        if not agent:
+            print("Ajan bulunamadı!")
+            return
+        
+        print(f"\n=== Ajan {agent.unique_id} ===")
+        print(f"Sınıf: {agent.__class__.__name__}")
+        print("Özellikler:")
+        
+        # Tüm özellikleri listele (__dict__ kullanarak)
+        for attr, value in vars(agent).items():
+            if not attr.startswith('_'):  # Private özellikleri atla
+                print(f"- {attr}: {value}")
+
+    def check_agent_type(agent):
+        """Ajanın hangi sınıftan olduğunu kontrol et"""
+        if isinstance(agent, Worker):
+            print("Bu bir Çalışan ajanı")
+        elif isinstance(agent, Student):
+            print("Bu bir Öğrenci ajanı")
+        # Diğer sınıflar...
+
+
+    
+    def step(self):
+        self.agents.do("step")
+
+
+
+
+
+
+mod = SimulationModel(2,2,2,2,2,2,2,1,1,1)
+# Modeli başlat ve ajanlar ekle...
+for _ in range(2):
+    mod.step()
+# Belirli bir ID'yi ara
+agent = mod.find_agent(11)
+
+
+# Bilgileri görüntüle
+mod.print_agent_info(agent)
+
+#mod.check_agent_type(agent)
+
