@@ -900,5 +900,10 @@ print(agent_df)  # İlk 5 satırı göster
 
 
 
+import matplotlib.pyplot as plt
 
+model_data = mod.datacollector.get_model_vars_dataframe()
+# Access the 'piyasa Fiyatı geçmisi' column and plot it directly
+plt.plot(model_data['piyasa Fiyatı geçmisi'].iloc[0]) # .iloc[0] to access the first list in the column
+plt.show()
 
