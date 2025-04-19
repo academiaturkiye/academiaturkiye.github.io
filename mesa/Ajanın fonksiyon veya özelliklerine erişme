@@ -1,0 +1,8 @@
+mod = SimulationModel(5, 5, 5, 5, 5, 5, 5, 4, 4, 4)
+# Get an agent, for example, agent with unique_id 1
+agent = mod.find_agent(1)  
+
+# Call analyze_market on the agent
+if agent:  # Check if agent was found
+    analiz = agent.analyze_market()
+    print(analiz)
