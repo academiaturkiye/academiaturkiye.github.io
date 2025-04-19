@@ -2,6 +2,18 @@
 
 # AJANLARIN GEÇMİŞ VERİ PENCERESİNE PİYASA ANALİZ SONUÇLARINI GÖRMEK İSTERSEK:
 
+YÖNTEM 1: 
+
+# SimulationModel örneği oluştur
+mod = SimulationModel(5, 5, 5, 5, 5, 5, 5, 4, 4, 4)
+mod.seriyi_goster()
+# Tüm ajanların piyasa analizini çalıştır ve sonuçları yazdır
+for agent in mod.agents:
+    analiz = agent.analyze_market()
+    print(f"Ajan ID: {agent.unique_id} | Geçmiş Veri Penceresi: {agent.gecmis_veri_penceresi} | Sonuç: {analiz}")
+
+
+YÖNTEM 2:
 
 mod = SimulationModel(5, 5, 5, 5, 5, 5, 5, 4, 4, 4)
 # Get an agent, for example, agent with unique_id 1
@@ -12,6 +24,7 @@ if agent:  # Check if agent was found
     analiz = agent.analyze_market()
     print(analiz)
 
+YÖNTEM 3:
 
 # Eğer find_agent ile belirli bir ajanı seçmek isterseniz:
 
