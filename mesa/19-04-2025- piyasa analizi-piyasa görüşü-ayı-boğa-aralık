@@ -20,3 +20,35 @@ def analyze_market(self):
             return "bear"
         else:
             return "range"
+--------------------------------------------------------
+
+       
+       
+       
+        """recent_prices = self.model.piyasa_fiyat_gecmisi[-self.gecmis_veri_penceresi :]
+        price_changes = np.diff(recent_prices)
+
+        if np.all(price_changes > 0):
+            return "bull"  # Boğa piyasası
+        elif np.all(price_changes < 0):
+            return "bear"  # Ayı piyasası
+        else:
+            return "range"  # Aralık piyasası"""
+
+
+
+        recent_prices = self.model.piyasa_fiyat_gecmisi[-self.gecmis_veri_penceresi :]
+        price_changes = np.diff(recent_prices)
+
+        # Pozitif ve negatif değişimlerin oranını hesapla
+        positive_ratio = np.sum(price_changes > 0) / len(price_changes)
+        negative_ratio = np.sum(price_changes < 0) / len(price_changes)
+
+        threshold = 0.7  # %70 eşik değeri (isteğe göre ayarlanabilir)
+
+        if positive_ratio >= threshold:
+            return "bull"  # Çoğunluk artış -> Boğa
+        elif negative_ratio >= threshold:
+            return "bear"  # Çoğunluk düşüş -> Ayı
+        else:
+            return "range"  # Belirgin trend yok -> Aralık
