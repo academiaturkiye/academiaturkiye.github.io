@@ -1,0 +1,22 @@
+
+def analyze_market(self):
+        # Piyasanın boğa, ayı veya aralık piyasası olduğunu belirle
+        if len(self.model.piyasa_fiyat_gecmisi) < self.gecmis_veri_penceresi :
+            return "unknown"  # Yeterli veri yoksa belirleme yapma
+
+        son_fiyatlar = np.array(self.model.piyasa_fiyat_gecmisi[-self.gecmis_veri_penceresi:])
+        
+        # Trend analizi (lineer regresyon eğimi)
+        egim = np.polyfit(np.arange(len(son_fiyatlar)), son_fiyatlar, 1)[0]
+        
+        # Hareketli ortalamalar
+        kisa_ma = son_fiyatlar[-50:].mean() if len(son_fiyatlar) >= 50 else None
+        uzun_ma = son_fiyatlar.mean()
+        
+        # Durum belirleme
+        if kisa_ma and kisa_ma > uzun_ma and egim > 0:
+            return "bull"
+        elif kisa_ma and kisa_ma < uzun_ma and egim < 0:
+            return "bear"
+        else:
+            return "range"
