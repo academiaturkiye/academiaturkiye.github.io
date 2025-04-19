@@ -1,0 +1,27 @@
+
+
+# AJANLARIN GEÇMİŞ VERİ PENCERESİNE PİYASA ANALİZ SONUÇLARINI GÖRMEK İSTERSEK:
+
+
+mod = SimulationModel(5, 5, 5, 5, 5, 5, 5, 4, 4, 4)
+# Get an agent, for example, agent with unique_id 1
+agent = mod.find_agent(30)  
+
+# Call analyze_market on the agent
+if agent:  # Check if agent was found
+    analiz = agent.analyze_market()
+    print(analiz)
+
+
+# Eğer find_agent ile belirli bir ajanı seçmek isterseniz:
+
+# Belirli bir ajanı bul ve analiz yap (örneğin ID=30)
+agent = mod.find_agent(30)
+
+if agent:
+    print(f"\nSeçilen Ajan Analizi:")
+    print(f"Ajan ID: {agent.unique_id}")
+    print(f"Pencere Boyutu: {agent.gecmis_veri_penceresi} gün")
+    print(f"Piyasa Durumu: {agent.analyze_market()}")
+else:
+    print("Ajan bulunamadı!")
