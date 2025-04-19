@@ -1,0 +1,8 @@
+    def _rastgele_yuruyus_olustur(self) -> List[float]:
+        """Rastgele yürüyüş (random walk) ile fiyat serisi oluşturur."""
+        fiyatlar = [self.baslangic_fiyat]
+        for _ in range(self.adim_sayisi - 1):
+            # %1-3 arası rastgele değişim (artış/azalış)
+            degisim = random.uniform(-0.03, 0.03) * fiyatlar[-1]
+            fiyatlar.append(fiyatlar[-1] + degisim)
+        return fiyatlar
