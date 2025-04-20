@@ -1,0 +1,101 @@
+ # belli bir sınıf içerisinde yer alan örneğin TemelStrateji adlı bir sıınıfta yer alan T adlı bir değişkenin grafiğini datacollector ile yada grafik ile almak istiyorum
+
+
+# Toplanan Verileri Dataframe'e Çevirin
+
+agent_data = model.datacollector.get_agent_vars_dataframe()
+print(agent_data.head())  # Veriyi kontrol et
+
+
+###################
+# T Değişkeninin Zaman Serisini Grafikle
+# Her bir ajanın T değerini zaman içinde çiz
+plt.figure(figsize=(10, 6))
+for agent_id in range(model.num_agents):
+    agent_df = agent_data.xs(agent_id, level="AgentID")
+    plt.plot(agent_df.index, agent_df["T"], label=f"Ajan {agent_id}")
+
+plt.xlabel("Adım")
+plt.ylabel("T Değeri")
+plt.title("TemelStrateji'de T Değişkeninin Zaman Serisi")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+##############
+
+# Ortalama T Değerini Göster
+# Tüm ajanların T ortalamasını çiz
+mean_T = agent_data.groupby("Step")["T"].mean()
+plt.plot(mean_T.index, mean_T.values, label="Ortalama T", color="red", linewidth=2)
+plt.legend()
+plt.show()
+
+############
+
+
+
+
+        self.datacollector = mesa.DataCollector(
+            model_reporters={"piyasa Fiyatı geçmisi": "piyasa_fiyat_gecmisi"},
+
+
+            
+                
+            agent_reporters={
+                "T": lambda a: a.T if isinstance(a, TemelStrateji) else None,
+                # Sınıf bazlı özellikler (lambda ile kontrol)
+                "TemelStrateji": lambda a: a.piyasa_gorusu if isinstance(a, TemelStrateji) else None,
+                "Teknik1Strateji": lambda a: a.piyasa_gorusu if isinstance(a, Teknik1Strateji) else None,
+                "ZıtlıkStratejisi": lambda a: a.piyasa_gorusu if isinstance(a, ZıtlıkStratejisi) else None,
+                # Ajan tipi
+                #"Agent_Type": "type"
+            }
+        )
+
+
+
+
+
+---
+import matplotlib.pyplot as plt
+
+agent_data = mod.datacollector.get_agent_vars_dataframe()
+print(agent_data.head())  # Veriyi kontrol et
+
+# Reset index to make 'AgentID' and 'Step' as columns
+agent_data = agent_data.reset_index()
+
+# Her bir ajanın T değerini zaman içinde çiz
+plt.figure(figsize=(10, 6))
+for agent_id in agent_data['AgentID'].unique():
+    agent_df = agent_data[agent_data['AgentID'] == agent_id]
+    # Check if 'T' column exists for the current agent
+    if 'T' in agent_df.columns:
+        plt.plot(agent_df['Step'], agent_df["T"], label=f"Ajan {agent_id}")
+
+plt.xlabel("Adım")
+plt.ylabel("T Değeri")
+plt.title("TemelStrateji'de T Değişkeninin Zaman Serisi")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+##########
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
