@@ -58,6 +58,8 @@ plt.show()
 
 
 ---
+
+# Tüm ajanlar için
 import matplotlib.pyplot as plt
 
 agent_data = mod.datacollector.get_agent_vars_dataframe()
@@ -80,6 +82,25 @@ plt.title("TemelStrateji'de T Değişkeninin Zaman Serisi")
 plt.legend()
 plt.grid(True)
 plt.show()
+
+-------------
+# sadece bir ajanın grafiği
+agent_data = mod.datacollector.get_agent_vars_dataframe()
+
+# ID=5 olan ajanın verilerini filtrele
+agent_6_data = agent_data.xs(6, level="AgentID")  # xs = cross-section
+print(agent_6_data.head())  # Kontrol edelim
+
+plt.figure(figsize=(10, 5))
+plt.plot(agent_6_data.index, agent_6_data["T"], color="red", linewidth=2)
+plt.xlabel("Adım")
+plt.ylabel("T Değeri")
+plt.title("ID=5 Olan Ajanın T Değeri Zaman Serisi")
+plt.grid(True)
+plt.show()
+
+
+
 
 ##########
 
