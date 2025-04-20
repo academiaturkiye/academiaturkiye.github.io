@@ -1,3 +1,4 @@
+
 mod = SimulationModel(5, 5, 5, 5, 5, 5, 5, 4, 4, 4)
 # Get an agent, for example, agent with unique_id 1
 agent = mod.find_agent(1)  
@@ -6,3 +7,13 @@ agent = mod.find_agent(1)
 if agent:  # Check if agent was found
     analiz = agent.analyze_market()
     print(analiz)
+
+
+#####################################
+# SimulationModel örneği oluştur
+mod = SimulationModel(5, 5, 5, 5, 5, 5, 5, 4, 4, 4)
+
+# Tüm ajanların piyasa analizini çalıştır ve sonuçları yazdır
+for agent in mod.agents:
+    analiz = agent.analyze_market()
+    print(f"Ajan ID: {agent.unique_id} | Geçmiş Veri Penceresi: {agent.gecmis_veri_penceresi} | Sonuç: {analiz}")
