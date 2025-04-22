@@ -1,0 +1,143 @@
+
+import random
+import matplotlib.pyplot as plt
+
+class InvestorAgent(mesa.Agent):
+    def __init__(self, model, alpha=0.5, beta=0.3):
+        super().__init__(model)
+        self.p = random.uniform(0, 1)  # Güven düzeyi
+        self.x = random.uniform(0, 1)  # Fiyat beklentisi
+        self.alpha = alpha  # Sürü etkisi katsayısı
+        self.beta = beta    # Beklenti güncelleme katsayısı
+        self.new_p = self.p
+        self.new_x = self.x
+
+    def step(self):
+        # Piyasa trendi modelden alınır
+        f = self.model.trend
+        
+        # Yeni güven düzeyi (sürü etkisi)
+        noise = random.uniform(-0.05, 0.05)
+        self.new_p = self.p + self.alpha * (f - self.p) + noise
+        
+        # Yeni fiyat beklentisi
+        self.new_x = self.x + self.beta * (f - self.x)
+
+    def advance(self):
+        # Adım sonunda güncellemeleri uygula
+        self.p = self.new_p
+        self.x = self.new_x
+
+class HerdingMarket(mesa.Model):
+    def __init__(self, N=50):
+        super().__init__()
+        self.num_agents = N
+        
+        self.trend = random.uniform(0, 1)  # İlk piyasa trendi rastgele
+        self.datacollector = mesa.DataCollector(
+            model_reporters={"Trend": lambda m: m.trend},
+            agent_reporters={"Confidence": lambda a: a.p, "Expectation": lambda a: a.x}
+        )
+
+        for i in range(self.num_agents):
+            agent = InvestorAgent(self)
+            self.agents.add(agent)
+
+    def step(self):
+        self.datacollector.collect(self)
+        self.agents.do("step")
+
+        # Yeni trend ajanların ortalama güven düzeyinden türetilir
+        total_confidence = sum(agent.p for agent in self.agents)
+        self.trend = total_confidence / self.num_agents
+
+# Simülasyonu çalıştır
+model = HerdingMarket(N=100)
+for i in range(10):
+    model.step()
+
+# Verileri görselleştir
+import pandas as pd
+
+df_model = model.datacollector.get_model_vars_dataframe()
+df_model.plot(title="Piyasa Trendi (Sürü Psikolojisi)", figsize=(10, 4))
+plt.xlabel("Adım")
+plt.ylabel("Piyasa Trendi")
+plt.grid(True)
+plt.show()
+
+----------------------------------------------------
+
+import random
+import matplotlib.pyplot as plt
+
+class InvestorAgent(mesa.Agent):
+    def __init__(self, model, alpha=0.5, beta=0.3):
+        super().__init__(model)
+        self.p = random.uniform(0, 1)  # Güven düzeyi
+        self.x = random.uniform(0, 1)  # Fiyat beklentisi
+        self.alpha = alpha  # Sürü etkisi katsayısı
+        self.beta = beta    # Beklenti güncelleme katsayısı
+        self.new_p = self.p
+        self.new_x = self.x
+
+    def step(self):
+        # Piyasa trendi modelden alınır
+        f = self.model.trend
+        
+        # Yeni güven düzeyi (sürü etkisi)
+        # Increased noise range for more variation
+        noise = random.uniform(-0.15, 0.15)  
+        self.new_p = self.p + self.alpha * (f - self.p) + noise
+        
+        # Yeni fiyat beklentisi
+        self.new_x = self.x + self.beta * (f - self.x)
+
+    def advance(self):
+        # Adım sonunda güncellemeleri uygula
+        self.p = self.new_p
+        self.x = self.new_x
+
+class HerdingMarket(mesa.Model):
+    def __init__(self, N=50):
+        super().__init__()
+        self.num_agents = N
+        
+        self.trend = random.uniform(0, 1)  # İlk piyasa trendi rastgele
+        self.datacollector = mesa.DataCollector(
+            model_reporters={"Trend": lambda m: m.trend},
+            agent_reporters={"Confidence": lambda a: a.p, "Expectation": lambda a: a.x}
+        )
+
+        for i in range(self.num_agents):
+            agent = InvestorAgent(self)
+            self.agents.add(agent)
+
+    def step(self):
+        self.datacollector.collect(self)
+        self.agents.do("step")
+
+        # Yeni trend ajanların ortalama güven düzeyinden türetilir
+        total_confidence = sum(agent.p for agent in self.agents)
+        self.trend = total_confidence / self.num_agents
+        
+        # Introduce a small random fluctuation to the trend to prevent stagnation
+        self.trend += random.uniform(-0.05, 0.05) 
+        self.trend = max(0, min(1, self.trend)) # Keep trend within 0-1 range
+
+
+# Simülasyonu çalıştır
+model = HerdingMarket(N=100)
+for i in range(10):
+    model.step()
+
+# Verileri görselleştir
+import pandas as pd
+
+df_model = model.datacollector.get_model_vars_dataframe()
+df_model.plot(title="Piyasa Trendi (Sürü Psikolojisi)", figsize=(10, 4))
+plt.xlabel("Adım")
+plt.ylabel("Piyasa Trendi")
+plt.grid(True)
+plt.show()
+
