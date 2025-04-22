@@ -141,3 +141,115 @@ plt.ylabel("Piyasa Trendi")
 plt.grid(True)
 plt.show()
 
+------------------------------------
+Tamam, trend (0 ile 1 arasında kısıtlanmış) ile sürü modelinizdeki fiyat arasındaki ilişkiyi açıklığa kavuşturalım: 
+Dolaylı İlişki: Modelinizdeki trendin fiyatla doğrudan bir matematiksel ilişkisi yoktur. Trend değerine dayalı olarak 
+fiyatı doğrudan hesaplayan bir formül yoktur. Temsilci Davranışı Üzerindeki Etkisi: Ancak trendin, temsilci davranışı
+üzerindeki etkisi yoluyla fiyat üzerinde önemli bir dolaylı etkisi vardır. Daha önce tartışıldığı gibi, trend, temsilcilerin
+güvenini ve beklentilerini etkileyen piyasa duyarlılığını temsil eder: 1'e yakın trend (Boğa): Temsilciler daha güvenlidir ve 
+daha yüksek fiyat beklentilerine sahiptir. Bu artan güven daha fazla satın alma faaliyetine yol açabilir ve bu da gerçek bir 
+piyasada artan talep nedeniyle fiyatların yükselmesine neden olabilir. 0'a yakın trend (Ayı): Temsilciler daha az güvenlidir ve 
+daha düşük fiyat beklentilerine sahiptir. Bu azalan güven daha fazla satış faaliyetine yol açabilir ve bu da gerçek bir piyasada 
+artan arz nedeniyle fiyatların düşmesine neden olabilir. Ortaya Çıkan Fiyat Davranışı: Bu nedenle, trend doğrudan fiyatı belirlemese de, 
+aracı eylemlerini (alım veya satım) etkiler ve bu da acil olarak fiyatı etkiler. Trend tarafından yönlendirilen aracıların toplu davranışı, 
+fiyatlar üzerinde yukarı veya aşağı yönlü baskı yaratabilir. Mevcut Modelinizde Eksik Fiyat Unsuru: Mevcut modelinizin açıkça bir fiyat değişkeni 
+veya fiyat değişiklikleri için bir mekanizma içermediğini belirtmek önemlidir. Sadece sürü davranışını ve piyasa duygusu (trend) üzerindeki etkisini 
+simüle etmeye odaklanır. Modeli Genişletme: Fiyat dinamiklerini dahil etmek için modelinizi genişletmeniz gerekir: Bir fiyat değişkeni ekleyin: Mevcut 
+piyasa fiyatını temsil etmek için bir değişken tanıtın. Aracı eylemlerini fiyat değişikliklerine bağlayın: Alım faaliyetinin fiyatı artırdığı ve satış 
+faaliyetinin fiyatı azalttığı bir mekanizma uygulayın. Bu, basit bir arz-talep ilişkisi veya daha karmaşık bir fiyat oluşum modeli olabilir. Trendi fiyat 
+değişikliklerine göre güncelleyin: Fiyat ve duygu arasında bir geri bildirim döngüsü oluşturmak için trendi son fiyat hareketlerine göre güncellemeyi de 
+düşünebilirsiniz. Bu öğeleri ekleyerek, sürü davranışı, piyasa duygusu ve fiyat hareketleri arasındaki etkileşimi yakalayan daha kapsamlı bir simülasyon oluşturabilirsiniz. 
+Umarım bu, modelinizdeki trend ve fiyat arasındaki ilişkiyi açıklığa kavuşturmanıza yardımcı olur! Başka sorularınız varsa sormaktan çekinmeyin.
+
+
+
+import random
+import matplotlib.pyplot as plt
+
+class InvestorAgent(mesa.Agent):
+    def __init__(self, model, alpha=0.5, beta=0.3):
+        super().__init__(model)
+        self.p = random.uniform(0, 1)  # Güven düzeyi
+        self.x = random.uniform(0, 1)  # Fiyat beklentisi
+        self.alpha = alpha  # Sürü etkisi katsayısı
+        self.beta = beta    # Beklenti güncelleme katsayısı
+        self.new_p = self.p
+        self.new_x = self.x
+
+    def step(self):
+        # Piyasa trendi modelden alınır
+        f = self.model.trend
+        
+        # Yeni güven düzeyi (sürü etkisi)
+        # Increased noise range for more variation
+        noise = random.uniform(-0.15, 0.15)  
+        self.new_p = self.p + self.alpha * (f - self.p) + noise
+        
+        # Yeni fiyat beklentisi
+        self.new_x = self.x + self.beta * (f - self.x)
+
+    def advance(self):
+        # Adım sonunda güncellemeleri uygula
+        self.p = self.new_p
+        self.x = self.new_x
+
+import random
+import matplotlib.pyplot as plt
+
+class InvestorAgent(mesa.Agent):
+    def __init__(self, model, alpha=0.5, beta=0.3):
+        super().__init__(model)
+        self.p = random.uniform(0, 1)  # Güven düzeyi
+        self.x = random.uniform(0, 1)  # Fiyat beklentisi
+        self.alpha = alpha  # Sürü etkisi katsayısı
+        self.beta = beta    # Beklenti güncelleme katsayısı
+        self.new_p = self.p
+        self.new_x = self.x
+
+    def step(self):
+        # Piyasa trendi modelden alınır
+        f = self.model.trend
+        
+        # Yeni güven düzeyi (sürü etkisi)
+        # Increased noise range for more variation
+        noise = random.uniform(-0.15, 0.15)  
+        self.new_p = self.p + self.alpha * (f - self.p) + noise
+        
+        # Yeni fiyat beklentisi
+        self.new_x = self.x + self.beta * (f - self.x)
+
+    def advance(self):
+        # Adım sonunda güncellemeleri uygula
+        self.p = self.new_p
+        self.x = self.new_x
+
+class HerdingMarket(mesa.Model):
+    def __init__(self, N=50):
+        super().__init__()
+        self.num_agents = N
+        
+        self.trend = random.uniform(0, 1)  # İlk piyasa trendi rastgele
+        self.datacollector = mesa.DataCollector(
+            model_reporters={"Trend": lambda m: m.trend},
+            agent_reporters={"Confidence": lambda a: a.p, "Expectation": lambda a: a.x}
+        )
+
+        for i in range(self.num_agents):
+            agent = InvestorAgent(self)
+            self.agents.add(agent)
+
+    def step(self):
+        self.datacollector.collect(self)
+        self.agents.do("step")
+
+        # Yeni trend ajanların ortalama güven düzeyinden türetilir
+        total_confidence = sum(agent.p for agent in self.agents)
+        self.trend = total_confidence / self.num_agents
+        
+        # Introduce a small random fluctuation to the trend to prevent stagnation
+        self.trend += random.uniform(-0.05, 0.05) 
+        self.trend = max(0, min(1, self.trend)) # Keep trend within 0-1 range
+
+
+
+
