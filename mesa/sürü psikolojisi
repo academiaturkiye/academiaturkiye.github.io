@@ -252,4 +252,16 @@ class HerdingMarket(mesa.Model):
 
 
 
-
+Burada tüm ajanslar için aynı trend değeri değişiyor, ajansların kendi duyarlılıklarını katlıyor ve buna göre 
+sattığınız kararlara göre fiyatlar etkileşiyor, doğru mu? Trend ve aracı davranışının mevcut modelde nasıl etkileşime 
+girdiğine dair anlayışınız doğru. Bunu parçalara ayıralım: Paylaşılan Trend, Bireysel Duyarlılık: Paylaşılan Trend: 
+HerdingMarket modelindeki tüm aracılar aynı trend değerini paylaşır. Bu, tüm aracıların toplu davranışından etkilenen 
+genel piyasa duyarlılığını temsil eder. Bireysel Duyarlılık: Trend paylaşılırken, her aracının kendi alfa (sürü duyarlılığı) 
+ve beta (beklenti ayarlaması) parametreleri vardır. Bu parametreler, her bir aracının trende ne kadar güçlü tepki vereceğini 
+belirler ve güvenini ve beklentilerini buna göre ayarlar. Trend Etkisi ve Aracı Eylemleri: Trendin Etkisi: Trend, InvestorAgent 
+sınıfının adım yöntemi aracılığıyla aracıların güvenini (p) ve beklentilerini (x) etkiler. Daha yüksek bir trend (boğa duygusu) 
+genellikle artan güvene ve beklentilere yol açarken, daha düşük bir trend (ayı duygusu) tam tersi etkiye sahiptir. Temsilci Eylemleri: 
+Temsilciler, bireysel güven ve beklentilerine göre alım veya satım kararları alırlar. Güvenleri yüksekse (genellikle yükseliş eğiliminden 
+etkilenir), alım yapma olasılıkları daha yüksektir ve bu da fiyatın yukarı doğru itilmesine neden olabilir. Güvenleri düşükse 
+(düşüş eğiliminden etkilenir), satış yapma olasılıkları daha yüksektir ve bu da fiyatın aşağı doğru itilmesine neden olabilir. 
+Fiyat Değişiklikleri ve Trend Geri Bildirimi: Fiyat Etkisi: Tüm temsilcilerin toplu alım ve satım kararları, genel alım kararını etkiler
