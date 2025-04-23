@@ -265,3 +265,45 @@ Temsilciler, bireysel güven ve beklentilerine göre alım veya satım kararlar�
 etkilenir), alım yapma olasılıkları daha yüksektir ve bu da fiyatın yukarı doğru itilmesine neden olabilir. Güvenleri düşükse 
 (düşüş eğiliminden etkilenir), satış yapma olasılıkları daha yüksektir ve bu da fiyatın aşağı doğru itilmesine neden olabilir. 
 Fiyat Değişiklikleri ve Trend Geri Bildirimi: Fiyat Etkisi: Tüm temsilcilerin toplu alım ve satım kararları, genel alım kararını etkiler
+
+
+
+
+
+import random
+import matplotlib.pyplot as plt
+
+# ... (InvestorAgent class remains the same) ...
+
+class HerdingMarket(mesa.Model):
+    def __init__(self, N=50, price_sensitivity=0.1):
+        # ... (Existing initialization code) ...
+        self.price = 100.0  # Initial price
+        self.price_history = [self.price]
+        self.price_sensitivity = price_sensitivity  # How much price changes affect trend
+
+    def step(self):
+        self.datacollector.collect(self)
+        self.agents.do("step")
+
+        # Calculate total buy and sell orders
+        total_buy_orders = sum(agent.x for agent in self.agents if agent.p > 0.5)
+        total_sell_orders = sum(agent.x for agent in self.agents if agent.p <= 0.5)
+
+        # Update price based on buy/sell pressure
+        price_change = (total_buy_orders - total_sell_orders) / self.num_agents
+        self.price += price_change 
+        self.price_history.append(self.price)
+
+        # Update trend based on price changes
+        recent_price_change = self.price_history[-1] - self.price_history[-2]
+        self.trend += self.price_sensitivity * recent_price_change
+        self.trend = max(0, min(1, self.trend))  # Keep trend within 0-1 range
+
+        # ... (Rest of the step method) ...
+
+    # Add price to datacollector
+    self.datacollector = mesa.DataCollector(
+        model_reporters={"Trend": lambda m: m.trend, "Price": lambda m: m.price},
+        agent_reporters={"Confidence": lambda a: a.p, "Expectation": lambda a: a.x}
+    )
