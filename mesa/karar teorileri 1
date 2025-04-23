@@ -1,0 +1,63 @@
+
+import numpy as np
+
+#np.random.seed(10)
+
+# Parametreler
+n_strategies = 5
+n_scenarios = 3
+scenario_probs = [0.25, 0.25, 0.5]  # Toplam 1.0
+
+# Simüle edilmiş getiriler: [strateji][senaryo]
+returns = np.random.uniform(-0.05, 0.15, size=(n_strategies, n_scenarios))
+
+# 1. Utility Theory
+utility = lambda r: np.mean(r) - 0.5 * np.std(r)
+utilities = [utility(returns[i]) for i in range(n_strategies)]
+chosen_utility = np.argmax(utilities)
+
+# 2. Expected Utility Theory
+expected_utilities = []
+for i in range(n_strategies):
+    u = [np.log(1 + returns[i][j]) for j in range(n_scenarios)]
+    EU = sum(p * u_j for p, u_j in zip(scenario_probs, u))
+    expected_utilities.append(EU)
+chosen_expected = np.argmax(expected_utilities)
+
+# 3. Bayesian Decision Theory
+posterior_probs = np.random.dirichlet(np.ones(n_strategies))
+bayesian_utilities = []
+for i in range(n_strategies):
+    avg_return = np.mean(returns[i])
+    U = np.log(1 + avg_return)
+    bayesian_utilities.append(posterior_probs[i] * U)
+chosen_bayesian = np.argmax(bayesian_utilities)
+
+# 4. Prospect Theory
+
+def value(x, alpha=0.88, lambd=2.25):
+    return x**alpha if x >= 0 else -lambd * ((-x)**alpha)
+
+def weight(p, gamma=0.61):
+    return (p**gamma) / ((p**gamma + (1 - p)**gamma)**(1 / gamma))
+
+prospect_utilities = []
+for i in range(n_strategies):
+    v = [value(r) for r in returns[i]]
+    w = [weight(p) for p in scenario_probs]
+    PT = sum(w_j * v_j for w_j, v_j in zip(w, v))
+    prospect_utilities.append(PT)
+chosen_prospect = np.argmax(prospect_utilities)
+
+# 5. Bounded Rationality (heuristic): En çok pozitif getiri alan
+positive_counts = [np.sum(returns[i] > 0) for i in range(n_strategies)]
+chosen_bounded = np.argmax(positive_counts)
+
+# Sonuçlar
+print("Getiri Matrisi (strateji x senaryo):\n", np.round(returns, 3))
+print("\nSeçilen Stratejiler:")
+print("- Utility Theory:", chosen_utility)
+print("- Expected Utility Theory:", chosen_expected)
+print("- Bayesian Decision Theory:", chosen_bayesian)
+print("- Prospect Theory:", chosen_prospect)
+print("- Bounded Rationality:", chosen_bounded)
