@@ -1,0 +1,363 @@
+
+al sat arasındaki fiyat farklarını listeleme, getiri ve olasılıklarını piyasa tiplerine göre hesaplama
+
+
+"""Ajanlar al emri ile sat emri arasındaki fiyat değişimlerini bir listede tutuyorlar. 
+Eğer ajan ilk sat emri vermişse simülasyonun ilk adımındaki başlangıç fiyatı ilk al emri 
+olarak kabul edilecek ve sat emri arasındaki fiyatlar listeye kaydedilecektir. Eğer ajan 
+ilk emri al olarak vermişse al emri ile sat emri arasındaki fiyatlar listeye alınacaktır. 
+Ajanların sat emrinden sonraki al emrine kadar olan fiyat değişimleri dikkate alınmayacaktır. 
+Bu şekilde ajanlar 3 defa al ve 3 defa sat işlemi yaptıktan sonra, fiyat değişimlerini tutan 
+listedeki pozitif getirilerin ortalaması alınacak bir değişkene kaydedilecek ve negatif getirilerin 
+ortalaması alınacak bir değişkene kaydedilecektir. Pozitif getirilerin frekansı bir değişkene 
+kaydedilecek ve negatif getirilerin frekansı bir değişkene kaydedilecektir"""
+
+
+class Agent:
+    def __init__(self, unique_id, initial_price):
+        self.unique_id = unique_id
+        self.price_history = []  # Alış ve satışlar arasındaki fiyat değişimleri
+        self.positive_returns = []
+        self.negative_returns = []
+        
+        self.first_action = None  # İlk aksiyon: "buy" mı "sell" mi?
+        self.pending_buy_price = None  # Alış fiyatı bekliyor mu?
+        self.trade_count = 0
+        
+        self.initial_price = initial_price  # Simülasyonun ilk fiyatı
+        
+        self.positive_return_avg = 0
+        self.negative_return_avg = 0
+        self.positive_return_freq = 0
+        self.negative_return_freq = 0
+    
+    def step(self, current_price, action):
+        """
+        Agent her adımda bir aksiyon alır: 'buy' ya da 'sell'.
+        current_price: şimdiki piyasa fiyatı
+        action: buy veya sell
+        """
+        
+        # İlk aksiyon
+        if self.first_action is None:
+            self.first_action = action
+            if action == "sell":
+                self.pending_buy_price = self.initial_price  # İlk fiyatı alış gibi kabul et
+            return
+        
+        # Aksiyon akışı
+        if action == "buy":
+            # Yeni alış yapıldı, bir şey yapmaya gerek yok (satış bekleyeceğiz)
+            if self.pending_buy_price is None:
+                self.pending_buy_price = current_price
+        elif action == "sell" and self.pending_buy_price is not None:
+            # Satış yapılıyor ve bir alış var
+            price_change = current_price - self.pending_buy_price
+            self.price_history.append(price_change)
+            
+            # Satıştan sonra pending_buy_price resetlenir (ta ki yeni alış gelene kadar)
+            self.pending_buy_price = None
+            self.trade_count += 1
+    
+    def analyze_returns(self):
+        """
+        Tüm kaydedilen price_change'leri analiz eder:
+        Pozitif ve negatif getirilerin ortalaması ve frekansı hesaplanır.
+        """
+        for change in self.price_history:
+            if change > 0:
+                self.positive_returns.append(change)
+            elif change < 0:
+                self.negative_returns.append(change)
+        
+        if self.positive_returns:
+            self.positive_return_avg = sum(self.positive_returns) / len(self.positive_returns)
+            self.positive_return_freq = len(self.positive_returns)
+        
+        if self.negative_returns:
+            self.negative_return_avg = sum(self.negative_returns) / len(self.negative_returns)
+            self.negative_return_freq = len(self.negative_returns)
+    
+    def report(self):
+        return {
+            "Agent": self.unique_id,
+            "Positive Return Average": self.positive_return_avg,
+            "Positive Return Frequency": self.positive_return_freq,
+            "Negative Return Average": self.negative_return_avg,
+            "Negative Return Frequency": self.negative_return_freq
+        }
+
+###################################################################################################################
+"""ajanlar her adımda al sat emri vermesin, belli aralıklarla ya da rastgele aralıklarla al sat emri versin,  """
+
+
+import random
+
+class Agent:
+    def __init__(self, unique_id, initial_price, current_step):
+        self.unique_id = unique_id
+        self.price_history = []  # Alış-satış arasındaki fiyat değişimleri
+        self.positive_returns = []
+        self.negative_returns = []
+        
+        self.first_action = None
+        self.pending_buy_price = None
+        self.trade_count = 0
+        
+        self.initial_price = initial_price
+        self.positive_return_avg = 0
+        self.negative_return_avg = 0
+        self.positive_return_freq = 0
+        self.negative_return_freq = 0
+        
+        # Emir zamanı ayarları
+        self.next_action_step = current_step + random.randint(5, 15)  # İlk emir vereceği adım
+        self.last_action = None  # Önceki aksiyonu kaydetmek için
+    
+    def step(self, current_step, current_price):
+        """
+        Ajan sadece belirli adımlarda aksiyon alır.
+        """
+        if current_step < self.next_action_step:
+            return  # Şu an bekleme zamanı, hiçbir şey yapmıyoruz
+        
+        # Şu an aksiyon zamanı geldi
+        action = self.decide_action()
+        
+        if self.first_action is None:
+            self.first_action = action
+            if action == "sell":
+                self.pending_buy_price = self.initial_price
+            self.set_next_action_step(current_step)
+            self.last_action = action
+            return
+        
+        if action == "buy":
+            if self.pending_buy_price is None:
+                self.pending_buy_price = current_price
+        elif action == "sell" and self.pending_buy_price is not None:
+            price_change = current_price - self.pending_buy_price
+            self.price_history.append(price_change)
+            self.pending_buy_price = None
+            self.trade_count += 1
+        
+        self.set_next_action_step(current_step)
+        self.last_action = action
+    
+    def decide_action(self):
+        """
+        Basit rastgele bir 'buy' veya 'sell' kararı verir.
+        Dilersen buraya karar teorilerini veya stratejiyi entegre edebiliriz.
+        """
+        if self.last_action == "buy":
+            return "sell"
+        else:
+            return "buy"
+    
+    def set_next_action_step(self, current_step):
+        """
+        Bir sonraki emir adımını belirle (örneğin 5-15 adım sonrasına).
+        """
+        self.next_action_step = current_step + random.randint(5, 15)
+    
+    def analyze_returns(self):
+        """
+        Kaydedilen fiyat değişimlerini analiz eder.
+        """
+        for change in self.price_history:
+            if change > 0:
+                self.positive_returns.append(change)
+            elif change < 0:
+                self.negative_returns.append(change)
+        
+        if self.positive_returns:
+            self.positive_return_avg = sum(self.positive_returns) / len(self.positive_returns)
+            self.positive_return_freq = len(self.positive_returns)
+        
+        if self.negative_returns:
+            self.negative_return_avg = sum(self.negative_returns) / len(self.negative_returns)
+            self.negative_return_freq = len(self.negative_returns)
+    
+    def report(self):
+        return {
+            "Agent": self.unique_id,
+            "Positive Return Average": self.positive_return_avg,
+            "Positive Return Frequency": self.positive_return_freq,
+            "Negative Return Average": self.negative_return_avg,
+            "Negative Return Frequency": self.negative_return_freq
+        }
+
+
+Bu kod, önceki kod gibi bir piyasa simülasyonunda bir ajanın davranışlarını modeller, fakat ajanların belirli aralıklarla işlem yapması için rastgelelik ekler. 
+Ajanlar her adımda işlem yapmak yerine, 5 ile 15 adım arasında rastgele bir süre bekler ve sonra işlem yapar. Bu, simülasyonu daha gerçekçi hale getirir çünkü 
+gerçek piyasalarda da tüm ajanlar her zaman aynı anda işlem yapmaz.
+
+Farklılıklar:
+
+random modülü: Rastgele sayılar üretmek için random modülü kullanılır.
+next_action_step: Ajanın bir sonraki adımda işlem yapıp yapmayacağını belirlemek için kullanılır. Bu değer, __init__ fonksiyonunda rastgele olarak atanır ve her 
+işlemden sonra set_next_action_step fonksiyonu ile güncellenir.
+last_action: Ajanın önceki işlemini saklar. Bu, decide_action fonksiyonunda bir sonraki işlemin ne olacağına karar vermek için kullanılır.
+step fonksiyonu: Artık current_step parametresini alır ve next_action_step ile karşılaştırır. Eğer current_step next_action_step'den küçükse, ajan işlem yapmaz.
+decide_action fonksiyonu: Basit bir strateji ile bir sonraki işlemin "buy" veya "sell" olacağına karar verir. Bu fonksiyon, daha gelişmiş stratejilerle değiştirilebilir.
+Umarım bu açıklama daha anlaşılır olmuştur. Başka sorularınız varsa lütfen çekinmeden sorun.
+
+
+
+###################################################################################################################
+
+yukarıdaki kodda alış emri fiyatı ile satış emri fiyatı arasındaki fiyat farkı price_change değişkenine atılıyor. 
+Benim istediğim ise bu iki fiyat arasında geçen her adımda fiyat değişiklikleri price_change değişkenine atılsın.
+
+Anladım. Şu anki kodda, sadece alış ve satış emirleri gerçekleştiğinde fiyat farkı price_change değişkenine atanıyor. 
+Siz ise alış ve satış emirleri arasında geçen her adımda fiyat değişikliklerinin de price_change değişkenine atanmasını istiyorsunuz.
+
+Bunu yapmak için, step() fonksiyonunda bazı değişiklikler yapmamız gerekiyor. İşte güncellenmiş kod:
+
+
+import random
+
+class Agent:
+    # ... (Diğer fonksiyonlar aynı kalıyor)
+
+    def step(self, current_step, current_price):
+        """
+        Ajan sadece belirli adımlarda aksiyon alır.
+        Alış ve satış emirleri arasında geçen her adımda fiyat değişiklikleri price_change değişkenine atanır.
+        """
+        if current_step < self.next_action_step:
+            # Eğer bir alış emri bekleniyorsa (pending_buy_price None değilse), 
+            # her adımda fiyat değişikliğini kaydet
+            if self.pending_buy_price is not None:
+                price_change = current_price - self.pending_buy_price  
+                self.price_history.append(price_change)
+            return  # Şu an bekleme zamanı, hiçbir şey yapmıyoruz
+
+        # ... (Geri kalan kod aynı kalıyor)
+
+
+Değişiklikler:
+
+if current_step < self.next_action_step: bloğuna yeni bir if koşulu eklendi: if self.pending_buy_price is not None:.
+Bu yeni koşul, bir alış emri bekleniyorsa (yani pending_buy_price None değilse) her adımda çalışır.
+Koşul içinde, current_price ile pending_buy_price arasındaki fark hesaplanır ve price_change değişkenine atanır.
+price_change, price_history listesine eklenir.
+Bu değişikliklerle, ajan bir alış emri verdikten sonra, bir satış emri verene kadar geçen her adımda fiyat değişiklikleri 
+price_history listesine kaydedilir. Daha sonra analyze_returns() fonksiyonunda bu liste kullanılarak pozitif ve negatif getiriler hesaplanabilir.
+
+Örnek:
+
+Ajan 10. adımda bir alış emri verir (fiyat 100 olsun).
+
+adımda fiyat 102 olur. price_change = 102 - 100 = 2 olur ve price_history listesine eklenir.
+adımda fiyat 105 olur. price_change = 105 - 100 = 5 olur ve price_history listesine eklenir.
+adımda ajan bir satış emri verir. Bu durumda price_history listesi [2, 5] değerlerini içerecektir.
+Umarım bu değişiklikler istediğiniz gibi çalışır. Başka sorularınız varsa lütfen çekinmeden sorun. 
+
+
+###################################################################################################################
+
+
+şimdi diyelimki ajan her adımda piyasaya ilişkin boğa, ayı ve aralık olarak tutan bir listesi var ve her adım için bu listeyi tutuyor. 
+price_history listesinde bu boğa, ayı ve aralık'lara karşılık gelen pozitif ve negatif getirileri (getiri ortalaması ve frekansları) ayrı ayrı hesaplamak istiyor.
+
+Anladım, ajan her adımda piyasa durumunu ("boğa", "ayı", "aralık") kaydediyor ve bu durumlara göre getirileri ayrı ayrı hesaplamak istiyorsunuz. 
+Bunu yapmak için, Agent sınıfına yeni özellikler ve fonksiyonlar eklememiz gerekiyor.
+
+import random
+
+class Agent:
+    def __init__(self, unique_id, initial_price, current_step):
+        # ... (Diğer özellikler aynı kalıyor)
+        self.market_states = []  # Her adımda piyasa durumunu ("boğa", "ayı", "aralık") tutacak liste
+
+    def step(self, current_step, current_price, market_state):
+        """
+        Ajan sadece belirli adımlarda aksiyon alır.
+        Alış ve satış emirleri arasında geçen her adımda fiyat değişiklikleri price_change değişkenine atanır.
+        market_state parametresi, o adımda piyasanın durumunu ("boğa", "ayı", "aralık") belirtir.
+        """
+        self.market_states.append(market_state)  # Piyasa durumunu listeye ekle
+
+        # ... (Geri kalan kod aynı kalıyor)
+
+    def analyze_returns(self):
+        """
+        Kaydedilen fiyat değişimlerini analiz eder ve piyasa durumlarına göre getirileri hesaplar.
+        """
+        self.positive_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}
+        self.negative_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}
+
+        for i, change in enumerate(self.price_history):
+            state = self.market_states[i]  # O adımda piyasanın durumunu al
+            if change > 0:
+                self.positive_returns_by_state[state].append(change)
+            elif change < 0:
+                self.negative_returns_by_state[state].append(change)
+
+        # Piyasa durumlarına göre getiri ortalamalarını ve frekanslarını hesapla
+        self.positive_return_avg_by_state = {}
+        self.positive_return_freq_by_state = {}
+        self.negative_return_avg_by_state = {}
+        self.negative_return_freq_by_state = {}
+
+        for state in ["boğa", "ayı", "aralık"]:
+            if self.positive_returns_by_state[state]:
+                self.positive_return_avg_by_state[state] = sum(self.positive_returns_by_state[state]) / len(self.positive_returns_by_state[state])
+                self.positive_return_freq_by_state[state] = len(self.positive_returns_by_state[state])
+            else:
+                self.positive_return_avg_by_state[state] = 0
+                self.positive_return_freq_by_state[state] = 0
+
+            if self.negative_returns_by_state[state]:
+                self.negative_return_avg_by_state[state] = sum(self.negative_returns_by_state[state]) / len(self.negative_returns_by_state[state])
+                self.negative_return_freq_by_state[state] = len(self.negative_returns_by_state[state])
+            else:
+                self.negative_return_avg_by_state[state] = 0
+                self.negative_return_freq_by_state[state] = 0
+
+    def report(self):
+        """
+        Ajanın performansını özetleyen bir rapor oluşturur.
+        Piyasa durumlarına göre getirileri içerir.
+        """
+        report = {
+            "Agent": self.unique_id,
+            # ... (Diğer rapor bilgileri)
+        }
+
+        for state in ["boğa", "ayı", "aralık"]:
+            report[f"{state.capitalize()} Positive Return Average"] = self.positive_return_avg_by_state[state]
+            report[f"{state.capitalize()} Positive Return Frequency"] = self.positive_return_freq_by_state[state]
+            report[f"{state.capitalize()} Negative Return Average"] = self.negative_return_avg_by_state[state]
+            report[f"{state.capitalize()} Negative Return Frequency"] = self.negative_return_freq_by_state[state]
+
+        return report
+
+
+Değişiklikler:
+
+Agent sınıfına market_states listesi eklendi. Bu liste, her adımda piyasa durumunu tutacak.
+step() fonksiyonuna market_state parametresi eklendi. Bu parametre, o adımda piyasanın durumunu belirtecek.
+step() fonksiyonunda, market_state değeri market_states listesine ekleniyor.
+analyze_returns() fonksiyonu güncellendi. Artık, price_history listesindeki her fiyat değişikliği için, 
+o adımda piyasanın durumunu market_states listesinden alıyor ve getirileri piyasa durumlarına göre ayrı ayrı hesaplıyor.
+report() fonksiyonu güncellendi. Artık, piyasa durumlarına göre getirileri de rapora ekliyor.
+Bu değişikliklerle, ajan her adımda piyasa durumunu kaydedecek ve analyze_returns() fonksiyonu getirileri bu durumlara 
+göre ayrı ayrı hesaplayacaktır. report() fonksiyonu da bu getirileri rapora ekleyecektir. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
