@@ -479,7 +479,65 @@ class Agent:
         return report
 
 
+--------------------------------------------------------------------------
 
+
+        self.positive_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}
+        self.negative_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}
+
+        for i, change in enumerate(self.price_history):
+            state = self.market_states[i]  # O adımda piyasanın durumunu al
+            if change > 0:
+                self.positive_returns_by_state[state].append(change)
+            elif change < 0:
+                self.negative_returns_by_state[state].append(change)
+
+Yukarıdaki kodun açıklaması: 
+
+Bu kod bloğu, Agent sınıfının analyze_returns fonksiyonu içinde yer alır ve ajanın pozitif ve negatif getirilerini piyasa durumlarına 
+("boğa", "ayı", "aralık") göre ayrı ayrı hesaplamak için kullanılır.
+
+Adım adım açıklama:
+
+self.positive_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}: Bu satır, Agent nesnesinin positive_returns_by_state adlı bir 
+özelliğine bir sözlük atar. Bu sözlük, her piyasa durumu ("boğa", "ayı", "aralık") için boş bir liste içerir. Bu listeler, o piyasa 
+durumunda elde edilen pozitif getirileri saklamak için kullanılacaktır.
+
+self.negative_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}: Bu satır, Agent nesnesinin negative_returns_by_state adlı bir 
+özelliğine bir sözlük atar. Bu sözlük, her piyasa durumu ("boğa", "ayı", "aralık") için boş bir liste içerir. Bu listeler, o piyasa 
+durumunda elde edilen negatif getirileri saklamak için kullanılacaktır.
+
+for i, change in enumerate(self.price_history):: Bu satır, self.price_history listesindeki her eleman üzerinde döngü oluşturur. enumerate 
+fonksiyonu, hem elemanın indeksini (i) hem de değerini (change) döndürür.
+
+state = self.market_states[i]: Bu satır, döngünün her adımında, o adımda piyasanın durumunu (state) self.market_states listesinden alır. 
+i indeksi, price_history listesindeki o anki elemanın indeksine karşılık gelir ve aynı zamanda market_states listesindeki o anki piyasa 
+durumunun indeksine de karşılık gelir.
+
+if change > 0:: Bu koşul, eğer o adımda elde edilen getiri (change) pozitif ise çalışır.
+
+self.positive_returns_by_state[state].append(change): Eğer getiri pozitif ise, o adımda piyasanın durumuna (state) karşılık gelen 
+positive_returns_by_state sözlüğündeki listeye eklenir.
+
+elif change < 0:: Bu koşul, eğer o adımda elde edilen getiri (change) negatif ise çalışır.
+
+self.negative_returns_by_state[state].append(change): Eğer getiri negatif ise, o adımda piyasanın durumuna (state) karşılık gelen 
+negative_returns_by_state sözlüğündeki listeye eklenir.
+
+Özetle, bu kod bloğu, ajanın getirilerini piyasa durumlarına göre ayrı ayrı hesaplar ve saklar. Bu, ajanın hangi piyasa durumlarında 
+daha iyi performans gösterdiğini analiz etmek için kullanılabilir.
+
+Örnek:
+
+Diyelim ki price_history listesi [5, -2, 3] ve market_states listesi ["boğa", "ayı", "boğa"] olsun. Bu durumda, kod bloğu şu şekilde çalışacaktır:
+
+positive_returns_by_state ve negative_returns_by_state sözlükleri oluşturulur.
+Döngü, price_history listesindeki her eleman üzerinde başlar.
+İlk eleman 5'tir ve piyasa durumu "boğa"dır. 5 pozitif olduğu için, positive_returns_by_state["boğa"] listesine eklenir.
+İkinci eleman -2'dir ve piyasa durumu "ayı"dır. -2 negatif olduğu için, negative_returns_by_state["ayı"] listesine eklenir.
+Üçüncü eleman 3'tür ve piyasa durumu "boğa"dır. 3 pozitif olduğu için, positive_returns_by_state["boğa"] listesine eklenir.
+Döngü sonlanır.
+Bu noktada, positive_returns_by_state sözlüğü {"boğa": [5, 3], "ayı": [], "aralık": []} ve negative_returns_by_state sözlüğü {"boğa": [], "ayı": [-2], "aralık": []} olacaktır.
 
 
 
