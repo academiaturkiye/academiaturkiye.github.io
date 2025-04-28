@@ -540,10 +540,56 @@ Döngü sonlanır.
 Bu noktada, positive_returns_by_state sözlüğü {"boğa": [5, 3], "ayı": [], "aralık": []} ve negative_returns_by_state sözlüğü {"boğa": [], "ayı": [-2], "aralık": []} olacaktır.
 
 
+---------------------------------
 
 
+        # Piyasa durumlarına göre getiri ortalamalarını ve frekanslarını hesapla
+        self.positive_return_avg_by_state = {}
+        self.positive_return_freq_by_state = {}
+        self.negative_return_avg_by_state = {}
+        self.negative_return_freq_by_state = {}
+
+        for state in ["boğa", "ayı", "aralık"]:
+            if self.positive_returns_by_state[state]:
+                self.positive_return_avg_by_state[state] = sum(self.positive_returns_by_state[state]) / len(self.positive_returns_by_state[state])
+                self.positive_return_freq_by_state[state] = len(self.positive_returns_by_state[state])
+            else:
+                self.positive_return_avg_by_state[state] = 0
+                self.positive_return_freq_by_state[state] = 0
+
+            if self.negative_returns_by_state[state]:
+                self.negative_return_avg_by_state[state] = sum(self.negative_returns_by_state[state]) / len(self.negative_returns_by_state[state])
+                self.negative_return_freq_by_state[state] = len(self.negative_returns_by_state[state])
+            else:
+                self.negative_return_avg_by_state[state] = 0
+                self.negative_return_freq_by_state[state] = 0
 
 
+Bu kod satırları, Agent sınıfının analyze_returns fonksiyonu içinde yer alır ve daha önce hesaplanan pozitif ve negatif getirilerin piyasa durumlarına 
+("boğa", "ayı", "aralık") göre ortalamalarını ve frekanslarını saklamak için sözlükler oluşturur.
+
+Adım adım açıklama:
+
+self.positive_return_avg_by_state = {}: Bu satır, Agent nesnesinin positive_return_avg_by_state adlı bir özelliğine boş bir sözlük atar. Bu sözlük, 
+her piyasa durumu ("boğa", "ayı", "aralık") için pozitif getirilerin ortalamasını saklamak için kullanılacaktır.
+
+self.positive_return_freq_by_state = {}: Bu satır, Agent nesnesinin positive_return_freq_by_state adlı bir özelliğine boş bir sözlük atar. Bu sözlük, 
+her piyasa durumu ("boğa", "ayı", "aralık") için pozitif getirilerin frekansını (kaç kez pozitif getiri elde edildiği) saklamak için kullanılacaktır.
+
+self.negative_return_avg_by_state = {}: Bu satır, Agent nesnesinin negative_return_avg_by_state adlı bir özelliğine boş bir sözlük atar. Bu sözlük, 
+her piyasa durumu ("boğa", "ayı", "aralık") için negatif getirilerin ortalamasını saklamak için kullanılacaktır.
+
+self.negative_return_freq_by_state = {}: Bu satır, Agent nesnesinin negative_return_freq_by_state adlı bir özelliğine boş bir sözlük atar. Bu sözlük, 
+her piyasa durumu ("boğa", "ayı", "aralık") için negatif getirilerin frekansını (kaç kez negatif getiri elde edildiği) saklamak için kullanılacaktır.
+
+Özetle, bu kod satırları, ajanın getirilerinin piyasa durumlarına göre ortalamalarını ve frekanslarını saklamak için dört adet boş sözlük oluşturur. 
+Bu sözlükler, daha sonra analyze_returns fonksiyonunun devamında doldurulacaktır.
+
+Neden bu şekilde yapılıyor?
+
+Bu sözlükler, ajanın performansını piyasa durumlarına göre analiz etmek için kullanılır. Örneğin, ajanın "boğa" piyasasında pozitif getirilerinin 
+ortalaması ve frekansı, "ayı" piyasasındaki değerlerle karşılaştırılabilir. Bu, ajanın hangi piyasa durumlarında daha iyi performans gösterdiğini 
+anlamak için faydalı bilgiler sağlar.
 
 
 
