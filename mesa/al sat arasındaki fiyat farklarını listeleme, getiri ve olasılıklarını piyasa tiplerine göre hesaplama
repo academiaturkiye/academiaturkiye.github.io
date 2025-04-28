@@ -346,6 +346,136 @@ report() fonksiyonu güncellendi. Artık, piyasa durumlarına göre getirileri d
 Bu değişikliklerle, ajan her adımda piyasa durumunu kaydedecek ve analyze_returns() fonksiyonu getirileri bu durumlara 
 göre ayrı ayrı hesaplayacaktır. report() fonksiyonu da bu getirileri rapora ekleyecektir. 
 
+---------
+düzenlenmiş hali:
+
+import random
+
+class Agent:
+    def __init__(self, unique_id, initial_price, current_step):
+        self.unique_id = unique_id
+        self.price_history = []  # Alış-satış arasındaki fiyat değişimleri
+        self.positive_returns = []
+        self.negative_returns = []
+        
+        self.first_action = None
+        self.pending_buy_price = None
+        self.trade_count = 0
+        
+        self.initial_price = initial_price
+        self.positive_return_avg = 0
+        self.negative_return_avg = 0
+        self.positive_return_freq = 0
+        self.negative_return_freq = 0
+        
+        # Emir zamanı ayarları
+        self.next_action_step = current_step + random.randint(5, 15)  # İlk emir vereceği adım
+        self.last_action = None  # Önceki aksiyonu kaydetmek için
+
+        self.market_states = []  # Her adımda piyasa durumunu ("boğa", "ayı", "aralık") tutacak liste
+    
+    def step(self, current_step, current_price, market_state):
+        """
+        Ajan sadece belirli adımlarda aksiyon alır.
+        Alış ve satış emirleri arasında geçen her adımda fiyat değişiklikleri price_change değişkenine atanır.
+        market_state parametresi, o adımda piyasanın durumunu ("boğa", "ayı", "aralık") belirtir.
+        """
+        self.market_states.append(market_state)  # Piyasa durumunu listeye ekle
+
+        if current_step < self.next_action_step:
+            return  # Şu an bekleme zamanı, hiçbir şey yapmıyoruz
+        
+        # Şu an aksiyon zamanı geldi
+        action = self.decide_action()
+        
+        if self.first_action is None:
+            self.first_action = action
+            if action == "sell":
+                self.pending_buy_price = self.initial_price
+            self.set_next_action_step(current_step)
+            self.last_action = action
+            return
+        
+        if action == "buy":
+            if self.pending_buy_price is None:
+                self.pending_buy_price = current_price
+        elif action == "sell" and self.pending_buy_price is not None:
+            price_change = current_price - self.pending_buy_price
+            self.price_history.append(price_change)
+            self.pending_buy_price = None
+            self.trade_count += 1
+        
+        self.set_next_action_step(current_step)
+        self.last_action = action
+    
+    def decide_action(self):
+        """
+        Basit rastgele bir 'buy' veya 'sell' kararı verir.
+        Dilersen buraya karar teorilerini veya stratejiyi entegre edebiliriz.
+        """
+        if self.last_action == "buy":
+            return "sell"
+        else:
+            return "buy"
+    
+    def set_next_action_step(self, current_step):
+        """
+        Bir sonraki emir adımını belirle (örneğin 5-15 adım sonrasına).
+        """
+        self.next_action_step = current_step + random.randint(5, 15)
+    
+    def analyze_returns(self):
+        """
+        Kaydedilen fiyat değişimlerini analiz eder ve piyasa durumlarına göre getirileri hesaplar.
+        """
+        self.positive_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}
+        self.negative_returns_by_state = {"boğa": [], "ayı": [], "aralık": []}
+
+        for i, change in enumerate(self.price_history):
+            state = self.market_states[i]  # O adımda piyasanın durumunu al
+            if change > 0:
+                self.positive_returns_by_state[state].append(change)
+            elif change < 0:
+                self.negative_returns_by_state[state].append(change)
+
+        # Piyasa durumlarına göre getiri ortalamalarını ve frekanslarını hesapla
+        self.positive_return_avg_by_state = {}
+        self.positive_return_freq_by_state = {}
+        self.negative_return_avg_by_state = {}
+        self.negative_return_freq_by_state = {}
+
+        for state in ["boğa", "ayı", "aralık"]:
+            if self.positive_returns_by_state[state]:
+                self.positive_return_avg_by_state[state] = sum(self.positive_returns_by_state[state]) / len(self.positive_returns_by_state[state])
+                self.positive_return_freq_by_state[state] = len(self.positive_returns_by_state[state])
+            else:
+                self.positive_return_avg_by_state[state] = 0
+                self.positive_return_freq_by_state[state] = 0
+
+            if self.negative_returns_by_state[state]:
+                self.negative_return_avg_by_state[state] = sum(self.negative_returns_by_state[state]) / len(self.negative_returns_by_state[state])
+                self.negative_return_freq_by_state[state] = len(self.negative_returns_by_state[state])
+            else:
+                self.negative_return_avg_by_state[state] = 0
+                self.negative_return_freq_by_state[state] = 0
+    
+    def report(self):
+        """
+        Ajanın performansını özetleyen bir rapor oluşturur.
+        Piyasa durumlarına göre getirileri içerir.
+        """
+        report = {
+            "Agent": self.unique_id,
+            # ... (Diğer rapor bilgileri)
+        }
+
+        for state in ["boğa", "ayı", "aralık"]:
+            report[f"{state.capitalize()} Positive Return Average"] = self.positive_return_avg_by_state[state]
+            report[f"{state.capitalize()} Positive Return Frequency"] = self.positive_return_freq_by_state[state]
+            report[f"{state.capitalize()} Negative Return Average"] = self.negative_return_avg_by_state[state]
+            report[f"{state.capitalize()} Negative Return Frequency"] = self.negative_return_freq_by_state[state]
+
+        return report
 
 
 
