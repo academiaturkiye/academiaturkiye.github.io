@@ -371,6 +371,7 @@ class Agent:
         # Emir zamanı ayarları
         self.next_action_step = current_step + random.randint(5, 15)  # İlk emir vereceği adım
         self.last_action = None  # Önceki aksiyonu kaydetmek için
+        #self.last_action = random.choice(["buy", "sell"])  # Önceki aksiyonu rastgele olarak ata
 
         self.market_states = []  # Her adımda piyasa durumunu ("boğa", "ayı", "aralık") tutacak liste
     
