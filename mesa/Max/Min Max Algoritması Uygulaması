@@ -1,0 +1,150 @@
+
+Max/Min Algoritması Uygulaması
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def run_max_min_strategy(S, r=0.01, delta_tp=5, t_predict=100):
+    """
+    Max/Min Algoritması Uygulaması
+    
+    Parametreler:
+    - S: Varlık fiyatları (array)
+    - r: Risksiz faiz oranı (float)
+    - delta_tp: İşlem yapılacak sabit zaman aralığı (int)
+    - t_predict: Tahmin süresi (int)
+    """
+    n = len(S)
+    w = np.zeros(n)  # Servet
+    a = np.zeros(n)  # Varlık miktarı
+    w[0] = 1000      # Başlangıç serveti (örnek: 1000 birim)
+    
+    t = 0
+    while t < t_predict and t < n - delta_tp:
+        # Basit bir tahmin modeli: t_p_plus ve t_p_minus hesapla
+        # (Örnek: Geçmiş hareketli ortalamaları kullanıyoruz)
+        window_size = 10
+        if t >= window_size:
+            avg_prev = np.mean(S[t-window_size:t])
+            t_p_plus = avg_prev + 0.02 * S[t]  # Tahmini maksimum
+            t_p_minus = avg_prev - 0.02 * S[t] # Tahmini minimum
+        else:
+            t_p_plus = S[t] * 1.02  # Varsayılan değerler
+            t_p_minus = S[t] * 0.98
+        
+        if t_p_plus > t_p_minus:  # AL (Fiyat artışı bekleniyor)
+            if a[t] == 0:  # Eğer varlık yoksa al
+                a[t] = w[t] / S[t]
+            
+            # delta_tp boyunca aynı miktarı koru
+            for j in range(t, min(t + delta_tp, n-1)):
+                a[j+1] = a[j]
+                w[j+1] = a[j+1] * S[j+1]
+            
+        else:  # SAT (Fiyat düşüşü bekleniyor)
+            if a[t] > 0:  # Eğer varlık varsa sat
+                w[t] = a[t] * S[t]
+                a[t] = 0
+            
+            # delta_tp boyunca risksiz faizde tut
+            for j in range(t, min(t + delta_tp, n-1)):
+                w[j+1] = w[j] * (1 + r/252)  # Günlük faiz
+                a[j+1] = 0
+        
+        t += delta_tp
+    
+    return w, a
+
+# Örnek veri oluştur (rastgele fiyat hareketleri)
+import numpy as np
+import matplotlib.pyplot as plt
+
+def run_max_min_strategy(S, r=0.01, delta_tp=5, t_predict=100):
+    """
+    Max/Min Algoritması Uygulaması
+    
+    Parametreler:
+    - S: Varlık fiyatları (array)
+    - r: Risksiz faiz oranı (float)
+    - delta_tp: İşlem yapılacak sabit zaman aralığı (int)
+    - t_predict: Tahmin süresi (int)
+    """
+    n = len(S)
+    w = np.zeros(n)  # Servet
+    a = np.zeros(n)  # Varlık miktarı
+    w[0] = 1000      # Başlangıç serveti (örnek: 1000 birim)
+    
+    t = 0
+    while t < t_predict and t < n - delta_tp:
+        # Basit bir tahmin modeli: t_p_plus ve t_p_minus hesapla
+        # (Örnek: Geçmiş hareketli ortalamaları kullanıyoruz)
+        window_size = 10
+        if t >= window_size:
+            avg_prev = np.mean(S[t-window_size:t])
+            t_p_plus = avg_prev + 0.02 * S[t]  # Tahmini maksimum
+            t_p_minus = avg_prev - 0.02 * S[t] # Tahmini minimum
+        else:
+            t_p_plus = S[t] * 1.02  # Varsayılan değerler
+            t_p_minus = S[t] * 0.98
+        
+        if t_p_plus > t_p_minus:  # AL (Fiyat artışı bekleniyor)
+            if a[t] == 0:  # Eğer varlık yoksa al
+                a[t] = w[t] / S[t]
+            
+            # delta_tp boyunca aynı miktarı koru
+            for j in range(t, min(t + delta_tp, n-1)):
+                a[j+1] = a[j]
+                w[j+1] = a[j+1] * S[j+1]
+            
+        else:  # SAT (Fiyat düşüşü bekleniyor)
+            if a[t] > 0:  # Eğer varlık varsa sat
+                w[t] = a[t] * S[t]
+                a[t] = 0
+            
+            # delta_tp boyunca risksiz faizde tut
+            for j in range(t, min(t + delta_tp, n-1)):
+                w[j+1] = w[j] * (1 + r/252)  # Günlük faiz
+                a[j+1] = 0
+        
+        t += delta_tp
+    
+    return w, a
+
+# Örnek veri oluştur (rastgele fiyat hareketleri)
+np.random.seed(42)
+n_days = 200
+S = 100 + np.cumsum(np.random.randn(n_days) * 2)
+
+# Stratejiyi çalıştır
+wealth, assets = run_max_min_strategy(S, r=0.05, delta_tp=10, t_predict=150)
+
+# Sonuçları görselleştir
+plt.figure(figsize=(12, 6))
+plt.subplot(2, 1, 1)
+plt.plot(S, label='Varlık Fiyatı', color='blue')
+plt.title('Max/Min Algoritması Performansı')
+plt.legend()
+
+plt.subplot(2, 1, 2)
+plt.plot(wealth, label='Servet', color='green')
+plt.plot(assets * S, label='Varlık Değeri', linestyle='--', color='red')
+plt.legend()
+plt.show()
+
+print(f"Başlangıç Serveti: {wealth[0]:.2f}, Son Servet: {wealth[-1]:.2f}")
+wealth, assets = run_max_min_strategy(S, r=0.05, delta_tp=10, t_predict=150)
+
+# Sonuçları görselleştir
+plt.figure(figsize=(12, 6))
+plt.subplot(2, 1, 1)
+plt.plot(S, label='Varlık Fiyatı', color='blue')
+plt.title('Max/Min Algoritması Performansı')
+plt.legend()
+
+plt.subplot(2, 1, 2)
+plt.plot(wealth, label='Servet', color='green')
+plt.plot(assets * S, label='Varlık Değeri', linestyle='--', color='red')
+plt.legend()
+plt.show()
+
+print(f"Başlangıç Serveti: {wealth[0]:.2f}, Son Servet: {wealth[-1]:.2f}")
