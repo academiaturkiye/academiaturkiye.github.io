@@ -1,0 +1,51 @@
+
+import math
+
+def altin_oran():
+    """
+    Altın oranı hesaplar ve döndürür.
+    """
+    # 1. Adım: 5'in karekökünü hesaplayın
+    karekoku = math.sqrt(5)
+
+    # 2. Adım: 1 + karekökünü hesaplayın
+    toplam = 1 + karekoku
+
+    # 3. Adım: Sonucu 2'ye bölün
+    altin_oran = toplam / 2
+
+    return altin_oran
+
+def fibonacci_seviyeleri(baslangic_punktu, bitis_punktu):
+    """
+    Fibonacci geri çekilme seviyelerini hesaplar.
+    
+    :param başlangıç_punktu: Fiyat hareketinin başlangıç noktası
+    :param bitiş_punktu: Fiyat hareketinin bitiş noktası
+    :return: Fibonacci geri çekilme seviyeleri
+    """
+    # Altın oran ve Fibonacci seviyeleri
+    oranlar = [0.236, 0.382, 0.618]
+    
+    seviyeler = {}
+    # Correct the variable name here to match the function parameter:
+    fark = bitis_punktu - baslangic_punktu  
+    
+    for oran in oranlar:
+        geri_cekilme_seviyesi = bitis_punktu - fark * oran
+        seviyeler[f"Fibonacci seviyesi ({oran})"] = geri_cekilme_seviyesi
+    
+    return seviyeler
+
+# Altın oran hesaplama
+oran = altin_oran()
+print(f"Altın oran (phi) yaklaşık olarak: {oran}")
+
+# Fibonacci geri çekilme seviyeleri hesaplama
+baslangic = 100  # Örnek başlangıç fiyatı
+bitis = 150  # Örnek bitiş fiyatı
+seviye = fibonacci_seviyeleri(baslangic, bitis)
+
+print("\nFibonacci geri çekilme seviyeleri:")
+for anahtar, deger in seviye.items():
+    print(f"{anahtar}: {deger:.2f}")
