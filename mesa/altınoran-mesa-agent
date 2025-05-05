@@ -1,0 +1,33 @@
+class GoldenRatioTraderAgent(Agent):
+    """Altın oran yatırım stratejisini kullanan ajan"""
+    def __init__(self, unique_id, model, retracement_level=0.618):
+        super().__init__(unique_id, model)
+        self.retracement_level = retracement_level  # Fibonacci düzeltme seviyesi
+        self.cash = 1000  # Başlangıç nakit miktarı
+        self.shares = 10  # Başlangıç hisse sayısı
+    
+    def step(self):
+        """Altın oran stratejisini uygula"""
+        if len(self.model.price_history) < 2:
+            return
+        
+        high_price = max(self.model.price_history)
+        low_price = min(self.model.price_history)
+        retracement_price = high_price - (high_price - low_price) * self.retracement_level
+        
+        if self.model.stock_price <= retracement_price:
+            self.buy_stock()
+        elif self.model.stock_price >= high_price:
+            self.sell_stock()
+    
+    def buy_stock(self):
+        if self.cash >= self.model.stock_price:
+            self.shares += 1
+            self.cash -= self.model.stock_price
+            self.model.buy_orders.append(self)
+    
+    def sell_stock(self):
+        if self.shares > 0:
+            self.shares -= 1
+            self.cash += self.model.stock_price
+            self.model.sell_orders.append(self)
