@@ -1,0 +1,88 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Rastgele zaman serisi oluştur (100 birimlik)
+np.random.seed(42)
+time_series = np.cumsum(np.random.randn(100))  # Rastgele yürüyüş (random walk)
+
+# Fibonacci seviyelerini hesapla
+def calculate_fib_levels(data, window=20):
+    high = np.maximum.accumulate(data[-window:])
+    low = np.minimum.accumulate(data[-window:])
+    price_range = high - low
+    
+    return {
+        '23.6%': high - 0.236 * price_range,
+        '38.2%': high - 0.382 * price_range,
+        '61.8%': high - 0.618 * price_range,
+        'current_price': data[-1]
+    }
+
+# Stratejiyi uygula
+def fibonacci_strategy(data, window=20):
+    signals = []
+    positions = []
+    position = 0  # 0: Pozisyon yok, 1: Long, -1: Short
+    
+    for i in range(window, len(data)):
+        levels = calculate_fib_levels(data[:i], window)
+        
+        # Strateji kuralları
+        if position == 0:
+            # Use levels['61.8%'][-1] to get the last calculated Fibonacci level
+            if data[i] > levels['61.8%'][-1]:  
+                position = 1  # AL
+            elif data[i] < levels['23.6%'][-1]:  # Same change for '23.6%'
+                position = -1  # SAT
+        else:
+            if (position == 1 and data[i] < levels['38.2%'][-1]) or \
+               (position == -1 and data[i] > levels['38.2%'][-1]):  # Same for '38.2%'
+                position = 0  # Pozisyonu kapat
+                
+        signals.append(position)
+        positions.append(data[i])
+    
+    return np.array(signals), np.array(positions)
+
+# Stratejiyi çalıştır
+signals, strat_prices = fibonacci_strategy(time_series)
+
+# Görselleştirme
+plt.figure(figsize=(12, 6))
+
+# Zaman serisini çiz
+plt.plot(time_series, label='Zaman Serisi', alpha=0.7)
+
+# Fibonacci seviyelerini son window değeri için göster
+levels = calculate_fib_levels(time_series, 20)
+for level, value in levels.items():
+    if level != 'current_price':
+        # Get the last value of the array for plotting and formatting
+        plt.axhline(y=value[-1], linestyle='--', 
+                   label=f'Fib {level} ({value[-1]:.2f})') 
+
+# Sinyalleri işaretle
+buy_signals = np.where(signals == 1)[0] + 20  # Window offset
+sell_signals = np.where(signals == -1)[0] + 20
+plt.scatter(buy_signals, time_series[buy_signals], 
+           color='green', marker='^', label='AL Sinyali')
+plt.scatter(sell_signals, time_series[sell_signals],
+           color='red', marker='v', label='SAT Sinyali')
+
+plt.title('Fibonacci Stratejisi - Rastgele Zaman Serisi')
+plt.xlabel('Zaman Adımı')
+plt.ylabel('Değer')
+plt.legend()
+plt.grid()
+plt.show()
+
+# İşlem istatistikleri
+print(f"Toplam AL Sinyali: {len(buy_signals)}")
+print(f"Toplam SAT Sinyali: {len(sell_signals)}")
+print(f"Son Fibonacci Seviyeleri:")
+for level, value in levels.items():
+    # Check if value is an array before accessing elements
+    if level != 'current_price':
+        print(f"{level}: {value[-1]:.2f}")  
+    else:
+        print(f"{level}: {value:.2f}") # Print the scalar value directly
