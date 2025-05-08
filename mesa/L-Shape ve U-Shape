@@ -272,7 +272,7 @@ plt.show()
 
 ----------
 
-L SHAPE
+L SHAPE : (Solda ve sağda emirler hızla azalır, piyasa fiyatında tepe yapar.)
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -293,7 +293,7 @@ plt.show()
 
 ----------
 
-U-SHAPE
+U-SHAPE: (İki tarafta yoğunluk, ortada düşük emir sayısı.)
 
 # Veri oluştur
 emir_sayisi = 300 * np.exp(-0.1 * (fiyatlar - 95)**2) + 300 * np.exp(-0.1 * (fiyatlar - 105)**2)
