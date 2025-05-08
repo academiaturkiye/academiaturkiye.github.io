@@ -52,3 +52,50 @@ print("Sıra | ID      | Fiyat | Miktar")
 print("-----|---------|-------|-------")
 for i, order in enumerate(sorted_sell_orders, 1):
     print(f"{i:4} | {order['id']:7} | {order['price']:5} | {order['quantity']:6}")
+
+
+----------------------------------------------------------------------------------------------
+şimdi alıcı ve satıcı tarafından verilen emirlerin ağırlıklı ortalamasını alarak bir denge ya da piyasa fiyatı oluşturabilir misin
+Piyasa fiyatını, alıcı ve satıcı emirlerinin ağırlıklı ortalaması (volume-weighted average price, VWAP) ile hesaplayabiliriz. İşte adım adım Python kodu ve açıklaması:
+
+
+import random
+
+# Alıcı ve satıcı sayısı
+num_buyers = 10
+num_sellers = 10
+
+# Emir listeleri
+buy_orders = []
+sell_orders = []
+
+# Alıcıların emirleri (rastgele)
+for i in range(num_buyers):
+    price = random.randint(90, 110)
+    quantity = random.randint(1, 10)
+    buy_orders.append({'price': price, 'quantity': quantity})
+
+# Satıcıların emirleri (rastgele)
+for i in range(num_sellers):
+    price = random.randint(90, 110)
+    quantity = random.randint(1, 10)
+    sell_orders.append({'price': price, 'quantity': quantity})
+
+# Ağırlıklı ortalama fiyat fonksiyonu
+def calculate_weighted_average(orders):
+    total_value = sum(order['price'] * order['quantity'] for order in orders)
+    total_quantity = sum(order['quantity'] for order in orders)
+    return total_value / total_quantity if total_quantity != 0 else 0
+
+# Alış ve satış tarafının ağırlıklı ortalaması
+buy_side_vwap = calculate_weighted_average(buy_orders)
+sell_side_vwap = calculate_weighted_average(sell_orders)
+
+# Piyasa fiyatı (iki tarafın ortalaması)
+market_price = (buy_side_vwap + sell_side_vwap) / 2
+
+# Sonuçlar
+print("Alış Tarafı Ağırlıklı Ortalama Fiyat:", round(buy_side_vwap, 2))
+print("Satış Tarafı Ağırlıklı Ortalama Fiyat:", round(sell_side_vwap, 2))
+print("----------------------------------------")
+print("Piyasa Denge Fiyatı (Ağırlıklı Ortalama):", round(market_price, 2))
