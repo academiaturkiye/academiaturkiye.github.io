@@ -1,0 +1,54 @@
+
+
+"""
+piyasada 10 alıcı 10 satıcı var.
+piyasa fiyatı 100 değeri etrafında rastgele alım ve satım emri veriyorlar.
+her biri 1ile 10 arasında bir tamsayı değeri (miktarı) emir veriyor.
+en iyi alış teklifi (en yüksek fiyatı) ve en çok miktarda alış emri verenin öncelikli olduğu bir liste yapabilir misin. Ayrıca
+en iyi satış teklifi (en düşük fiyatı) ve en çok miktarda satış emri verenin öncelikli olduğu bir sıralama listesi yapabilir misin.
+
+"""
+
+import random
+from collections import defaultdict
+
+# Alıcı ve satıcı sayısı
+num_buyers = 10
+num_sellers = 10
+
+# Alış ve satış emirlerini tutacak listeler
+buy_orders = []
+sell_orders = []
+
+# Alıcılar rastgele alış emri veriyor (fiyat: 90-110 arası, miktar: 1-10 arası)
+for i in range(num_buyers):
+    price = random.randint(90, 110)  # Piyasa fiyatı etrafında rastgele fiyat
+    quantity = random.randint(1, 10)  # Rastgele miktar
+    buyer_id = f"Alıcı_{i+1}"
+    buy_orders.append({'id': buyer_id, 'price': price, 'quantity': quantity})
+
+# Satıcılar rastgele satış emri veriyor (fiyat: 90-110 arası, miktar: 1-10 arası)
+for i in range(num_sellers):
+    price = random.randint(90, 110)  # Piyasa fiyatı etrafında rastgele fiyat
+    quantity = random.randint(1, 10)  # Rastgele miktar
+    seller_id = f"Satıcı_{i+1}"
+    sell_orders.append({'id': seller_id, 'price': price, 'quantity': quantity})
+
+# Alış emirlerini sırala: Önce en yüksek fiyat, sonra en yük miktar
+sorted_buy_orders = sorted(buy_orders, key=lambda x: (-x['price'], -x['quantity']))
+
+# Satış emirlerini sırala: Önce en düşük fiyat, sonra en yüksek miktar
+sorted_sell_orders = sorted(sell_orders, key=lambda x: (x['price'], -x['quantity']))
+
+# Sonuçları yazdır
+print("Alış Emirleri (En yüksek fiyat + en yüksek miktar öncelikli):")
+print("Sıra | ID      | Fiyat | Miktar")
+print("-----|---------|-------|-------")
+for i, order in enumerate(sorted_buy_orders, 1):
+    print(f"{i:4} | {order['id']:7} | {order['price']:5} | {order['quantity']:6}")
+
+print("\nSatış Emirleri (En düşük fiyat + en yüksek miktar öncelikli):")
+print("Sıra | ID      | Fiyat | Miktar")
+print("-----|---------|-------|-------")
+for i, order in enumerate(sorted_sell_orders, 1):
+    print(f"{i:4} | {order['id']:7} | {order['price']:5} | {order['quantity']:6}")
