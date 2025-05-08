@@ -311,7 +311,7 @@ plt.show()
 
 ------------
 
-GERÇEKLEŞEN EMİRLERİN DAĞILIMI
+GERÇEKLEŞEN EMİRLERİN DAĞILIMI: LOG-NORMAL
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -332,7 +332,27 @@ plt.title('Gerçekleşen Emirlerin Log-Normal Dağılımı')
 plt.legend()
 plt.show()
 
+----------
 
+LOG NORMAL DAĞILIM
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parametreler
+mu = 3.0    # log(ortalama)
+sigma = 0.5 # log(std sapma)
+size = 1000
+
+# Log-normal dağılımdan örnekler
+data = np.random.lognormal(mean=mu, sigma=sigma, size=size)
+
+# Görselleştirme
+plt.hist(data, bins=50, density=True, alpha=0.7)
+plt.xlabel('Değer')
+plt.ylabel('Yoğunluk')
+plt.title('Log-Normal Dağılım')
+plt.show()
 
 
 
