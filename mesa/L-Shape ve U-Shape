@@ -270,7 +270,43 @@ plt.legend()
 plt.title('U-Shape Emir Defteri Dağılımı')
 plt.show()
 
+----------
 
+L SHAPE
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Veri oluştur
+fiyatlar = np.linspace(90, 110, 100)
+emir_sayisi = 500 * np.exp(-0.5 * np.abs(fiyatlar - 100))  # Exponential decay
+
+# Grafik
+plt.figure(figsize=(10, 5))
+plt.plot(fiyatlar, emir_sayisi, color='blue', label='L-Shape Dağılım')
+plt.xlabel('Fiyat')
+plt.ylabel('Emir Sayısı')
+plt.axvline(100, color='red', linestyle='--', label='Piyasa Fiyatı (100 TL)')
+plt.legend()
+plt.title('L-Shape Emir Defteri Dağılımı')
+plt.show()
+
+----------
+
+U-SHAPE
+
+# Veri oluştur
+emir_sayisi = 300 * np.exp(-0.1 * (fiyatlar - 95)**2) + 300 * np.exp(-0.1 * (fiyatlar - 105)**2)
+
+# Grafik
+plt.figure(figsize=(10, 5))
+plt.plot(fiyatlar, emir_sayisi, color='green', label='U-Shape Dağılım')
+plt.xlabel('Fiyat')
+plt.ylabel('Emir Sayısı')
+plt.axvline(100, color='red', linestyle='--', label='Piyasa Fiyatı (100 TL)')
+plt.legend()
+plt.title('U-Shape Emir Defteri Dağılımı')
+plt.show()
 
 
 
