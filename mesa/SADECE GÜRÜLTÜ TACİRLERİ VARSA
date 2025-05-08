@@ -1,0 +1,25 @@
+ # PİYASADA SADECE GÜRÜLTÜ TACİRLERİ VARSA
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parametreler
+gun_sayisi = 100
+baslangic_fiyat = 100
+volatilite = 3  # Gürültü tacirlerinin etki gücü
+
+# Rastgele fiyat üret (gürültü taciri etkisi)
+fiyatlar = [baslangic_fiyat]
+for _ in range(gun_sayisi):
+    degisim = np.random.normal(0, volatilite)  # Ortalama=0, Std=volatilite
+    fiyatlar.append(max(1, fiyatlar[-1] + degisim))  # Fiyat negatif olamaz
+
+# Grafik
+plt.figure(figsize=(10, 5))
+plt.plot(fiyatlar, color='red', label='Gürültü Taciri Piyasası')
+plt.axhline(baslangic_fiyat, linestyle='--', color='grey', label='Başlangıç Fiyatı')
+plt.title("Gürültü Tacirlerinin Fiyat Dalgalanmaları")
+plt.xlabel("Gün")
+plt.ylabel("Fiyat (TL)")
+plt.legend()
+plt.show()
