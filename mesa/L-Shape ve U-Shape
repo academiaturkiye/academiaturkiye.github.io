@@ -1,0 +1,73 @@
+# L SHAPE 
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parametreler
+mid_price = 100
+spread = 0.5  # Alım-satım spread'i
+num_orders = 500
+scale = 2  # Dağılımın yayılımı
+
+# Alım emirleri (bid): mid_price'in altında
+bids = mid_price - np.abs(np.random.exponential(scale, num_orders))
+bids = np.sort(bids[bids > mid_price - 10 * spread])  # Aşırı uçları filtrele
+
+# Satım emirleri (ask): mid_price'in üstünde
+asks = mid_price + np.abs(np.random.exponential(scale, num_orders))
+asks = np.sort(asks[asks < mid_price + 10 * spread])
+
+# Görselleştirme
+plt.figure(figsize=(10, 6))
+plt.hist(bids, bins=30, alpha=0.7, label='Alım Emirleri (Bid)', color='green')
+plt.hist(asks, bins=30, alpha=0.7, label='Satım Emirleri (Ask)', color='red')
+plt.axvline(mid_price, color='black', linestyle='--', label='Piyasa Fiyatı')
+plt.xlabel('Fiyat')
+plt.ylabel('Emir Sayısı')
+plt.legend()
+plt.title('Emir Defteri Dağılımı (L-Shape)')
+plt.show()
+
+
+# U-SHAPE
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parametreler
+mid_price = 100
+spread = 5  # Piyasa fiyatından uzaklık
+num_orders = 1000
+scale = 1.5  # Dağılımın keskinliği
+
+# Alım emirleri (bid): İki yoğunluk bölgesi (piyasa fiyatı altında)
+bids = np.concatenate([
+    mid_price - spread - np.abs(np.random.normal(0, scale, num_orders//2)),
+    mid_price - 3*spread - np.abs(np.random.normal(0, scale, num_orders//2))
+])
+bids = bids[bids > mid_price - 10*spread]  # Aşırı uçları filtrele
+
+# Satım emirleri (ask): İki yoğunluk bölgesi (piyasa fiyatı üstünde)
+asks = np.concatenate([
+    mid_price + spread + np.abs(np.random.normal(0, scale, num_orders//2)),
+    mid_price + 3*spread + np.abs(np.random.normal(0, scale, num_orders//2))
+])
+asks = asks[asks < mid_price + 10*spread]
+
+# Görselleştirme
+plt.figure(figsize=(12, 6))
+plt.hist(bids, bins=50, alpha=0.7, label='Alım Emirleri (Bid)', color='green', density=True)
+plt.hist(asks, bins=50, alpha=0.7, label='Satım Emirleri (Ask)', color='red', density=True)
+plt.axvline(mid_price, color='black', linestyle='--', linewidth=2, label='Piyasa Fiyatı')
+plt.xlabel('Fiyat', fontsize=12)
+plt.ylabel('Emir Yoğunluğu', fontsize=12)
+plt.title('U-Shape Emir Defteri Dağılımı', fontsize=14)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+
+
+
+
+
