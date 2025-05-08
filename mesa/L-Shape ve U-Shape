@@ -253,7 +253,22 @@ Piyasa koşullarına göre sınıflandırır
 Pro Tip: Gerçekçilik için alis_fiyati ve satis_fiyati dağılımlarınızı piyasa volatilitesine göre ayarlayın (örn. GARCH modeliyle).
 
 
+----------
+# U-SHAPE EMİR DEFTERİ DAĞILIMI
 
+# Veri oluştur
+fiyatlar_np = np.array(fiyatlar)  # fiyatlar listesini NumPy dizisine dönüştür
+emir_sayisi = 300 * np.exp(-0.1 * (fiyatlar_np - 95)**2) + 300 * np.exp(-0.1 * (fiyatlar_np - 105)**2)
+
+# Grafik
+plt.figure(figsize=(10, 5))
+plt.plot(fiyatlar_np, emir_sayisi, color='green', label='U-Shape Dağılım')
+plt.xlabel('Fiyat')
+plt.ylabel('Emir Sayısı')
+plt.axvline(100, color='red', linestyle='--', label='Piyasa Fiyatı (100 TL)')
+plt.legend()
+plt.title('U-Shape Emir Defteri Dağılımı')
+plt.show()
 
 
 
