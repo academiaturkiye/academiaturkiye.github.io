@@ -354,12 +354,86 @@ plt.ylabel('Yoğunluk')
 plt.title('Log-Normal Dağılım')
 plt.show()
 
+--------
+
+LOG-NORMAL AJANLAR-MESA ENTEGRASYONU
+
+from mesa import Agent, Model
+from mesa.time import RandomActivation
+import numpy as np
+
+class LogNormalAgent(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.value = np.random.lognormal(mean=3.0, sigma=0.5)
+    
+    def step(self):
+        # Her adımda log-normal rastgele değişim
+        self.value *= np.random.lognormal(mean=0, sigma=0.1)
+
+class LogNormalModel(Model):
+    def __init__(self, N):
+        self.num_agents = N
+        self.schedule = RandomActivation(self)
+        
+        # Agent'ları oluştur
+        for i in range(N):
+            agent = LogNormalAgent(i, self)
+            self.schedule.add(agent)
+    
+    def step(self):
+        self.schedule.step()
+
+# Modeli çalıştır
+model = LogNormalModel(100)
+for _ in range(10):  # 10 adım simülasyon
+    model.step()
 
 
 
+Veri toplama:
 
 
+from mesa.datacollection import DataCollector
 
+class LogNormalModel(Model):
+    def __init__(self, N):
+        # ... (önceki kod)
+        self.datacollector = DataCollector(
+            agent_reporters={"Value": "value"}
+        )
+    
+    def step(self):
+        self.schedule.step()
+        self.datacollector.collect(self)
+
+# Veri analizi
+model = LogNormalModel(100)
+for _ in range(10):
+    model.step()
+
+agent_data = model.datacollector.get_agent_vars_dataframe()
+print(agent_data.tail())
+
+
+---------
+
+LOG-NORMAL FİNANSAL UYGULAMA ÖRNEĞİ:
+
+class StockAgent(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.price = 100  # Başlangıç fiyatı
+        self.mu = 0.001   # Günlük getiri ortalaması
+        self.sigma = 0.02 # Volatilite
+    
+    def step(self):
+        # Günlük getiriyi log-normal dağılımdan üret
+        daily_return = np.random.lognormal(
+            mean=np.log(1 + self.mu) - 0.5*self.sigma**2,
+            sigma=self.sigma
+        )
+        self.price *= daily_return
 
 
 
