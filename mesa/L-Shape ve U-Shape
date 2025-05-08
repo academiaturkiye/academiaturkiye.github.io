@@ -66,6 +66,50 @@ plt.legend()
 plt.grid(True, alpha=0.3)
 plt.show()
 
+---
+
+# U-shape
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Parametreler
+mid_price = 100
+spread = 15  # Piyasa fiyatından minimum uzaklık
+num_orders = 2000
+scale = 3    # Dağılımın genişliği
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Parametreler
+mid_price = 100
+spread = 15  # Piyasa fiyatından minimum uzaklık
+num_orders = 2000
+scale = 3    # Dağılımın genişliği
+
+# Alım emirleri (bid): Piyasa fiyatından UZAKTA yoğunlaşma
+bids = mid_price - (spread + np.abs(np.random.weibull(1.5, num_orders)*10))
+bids = bids[(bids > mid_price - 4*spread) & (bids < mid_price - 0.5*spread)]  # Filtrele
+
+# Satım emirleri (ask): Piyasa fiyatından UZAKTA yoğunlaşma
+asks = mid_price + (spread + np.abs(np.random.weibull(1.5, num_orders)*10))
+asks = asks[(asks < mid_price + 4*spread) & (asks > mid_price + 0.5*spread)]
+
+# Görselleştirme
+plt.figure(figsize=(12, 6))
+plt.hist(bids, bins=30, alpha=0.7, label='Alım Emirleri (Bid)', color='green', density=True)
+plt.hist(asks, bins=30, alpha=0.7, label='Satım Emirleri (Ask)', color='red', density=True)
+plt.axvline(mid_price, color='black', linestyle='--', linewidth=2, label='Piyasa Fiyatı')
+plt.title('Gerçek U-Shape Emir Defteri', fontsize=14)
+plt.xlabel('Fiyat')
+plt.ylabel('Emir Yoğunluğu')
+plt.legend()
+plt.grid(True, alpha=0.3)
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
 
 
 
