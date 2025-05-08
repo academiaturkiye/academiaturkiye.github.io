@@ -123,3 +123,57 @@ plt.title('Emir Defteri: Arz-Talep Dengesi')
 plt.legend()
 plt.grid()
 plt.show()
+
+------------------------------------------------------------------------------------------
+bu piyasada defter nasıl temizlenir? yani alıcı ve satıcıların ne kadar aldığı ne kadar sattığı ve en son eline ne geçtiği ve elinde ne kaldığı nasıl hesaplanabilir
+Piyasada defterin (order book) temizlenmesi ve işlemlerin takibi için, alıcı ve satıcıların eşleşen emirlerini işleyip, kalan miktarları güncelleyen bir sistem eklemeliyiz. 
+İşte adım adım Python kodu ve açıklaması:
+
+import random
+
+# Alıcı ve satıcı sayısı
+num_buyers = 10
+num_sellers = 10
+
+# Emir listeleri (ID, fiyat, miktar)
+buy_orders = [{'id': f'Alıcı_{i+1}', 'price': random.randint(90, 110), 'quantity': random.randint(1, 10)} for i in range(num_buyers)]
+sell_orders = [{'id': f'Satıcı_{i+1}', 'price': random.randint(90, 110), 'quantity': random.randint(1, 10)} for i in range(num_sellers)]
+
+# Alıcı/satıcı pozisyonlarını takip etmek için sözlük
+positions = {order['id']: {'alım': 0, 'satım': 0, 'stok': 0} for order in buy_orders + sell_orders}
+
+# Emirleri öncelik sırasına göre sırala
+buy_orders_sorted = sorted(buy_orders, key=lambda x: (-x['price'], -x['quantity']))
+sell_orders_sorted = sorted(sell_orders, key=lambda x: (x['price'], -x['quantity']))
+
+# Eşleşen emirleri işle
+for buy in buy_orders_sorted:
+    for sell in sell_orders_sorted:
+        if buy['price'] >= sell['price'] and buy['quantity'] > 0 and sell['quantity'] > 0:
+            # Eşleşen miktarı belirle (min alış/satış miktarı)
+            matched_quantity = min(buy['quantity'], sell['quantity'])
+            # İşlem fiyatı (satıcının fiyatı veya ortalama)
+            trade_price = sell['price']
+            
+            # Pozisyonları güncelle
+            positions[buy['id']]['alım'] += matched_quantity
+            positions[buy['id']]['stok'] += matched_quantity
+            positions[sell['id']]['satım'] += matched_quantity
+            positions[sell['id']]['stok'] -= matched_quantity
+            
+            # Kalan miktarları düşür
+            buy['quantity'] -= matched_quantity
+            sell['quantity'] -= matched_quantity
+
+# Kalan emirleri ve pozisyonları yazdır
+print("\n----- Eşleşen İşlemler Sonrası Durum -----")
+print("Kalan Alış Emirleri:")
+print([{**order, 'quantity': order['quantity']} for order in buy_orders_sorted if order['quantity'] > 0])
+
+print("\nKalan Satış Emirleri:")
+print([{**order, 'quantity': order['quantity']} for order in sell_orders_sorted if order['quantity'] > 0])
+
+print("\n----- Pozisyonlar -----")
+for participant, data in positions.items():
+    if data['alım'] > 0 or data['satım'] > 0:
+        print(f"{participant}: Alım={data['alım']}, Satım={data['satım']}, Stok={data['stok']}")
