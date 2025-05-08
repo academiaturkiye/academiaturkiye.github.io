@@ -111,6 +111,167 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 
+----------------------
+
+diyelim ki, ajanlar al ve sat emirleri veriyorlar, ajanların al ve sat emirlerinin grafiğini çizdirip L veya U şekillerine ne kadar benzediğini öğrenmek istiyorum. ne yapabilirim?
+
+İşte ajanlarınızın emirlerinin L-shape veya U-shape'e benzerliğini analiz edecek adım adım Python çözümü:
+
+1. Veri Toplama ve Ön İşleme
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import pearsonr
+from sklearn.metrics import mean_squared_error
+
+# Ajan emirlerini topla
+def collect_orders(agent_list):
+    buys = []; sells = []
+    for agent in agent_list:
+        if hasattr(agent, 'alis_fiyati') and hasattr(agent, 'alis_miktari'):
+            buys.extend([agent.alis_fiyati]*int(agent.alis_miktari))
+        if hasattr(agent, 'satis_fiyati') and hasattr(agent, 'satis_miktari'):
+            sells.extend([agent.satis_fiyati]*int(agent.satis_miktari))
+    return np.array(buys), np.array(sells)
+
+
+
+2. Görselleştirme ve Şekil Analizi
+
+
+
+def analyze_orderbook_shape(buy_prices, sell_prices, mid_price):
+    plt.figure(figsize=(12,6))
+    
+    # Histogram ayarları
+    bins = np.linspace(min(buy_prices.min(), sell_prices.min()), 
+                     max(buy_prices.max(), sell_prices.max()), 50)
+    
+    # Alım emirleri
+    plt.hist(buy_prices, bins=bins, alpha=0.7, color='green', label='Alım', density=True)
+    
+    # Satım emirleri
+    plt.hist(sell_prices, bins=bins, alpha=0.7, color='red', label='Satım', density=True)
+    
+    plt.axvline(mid_price, color='black', linestyle='--', label='Piyasa Fiyatı')
+    plt.title('Emir Defteri Dağılımı')
+    plt.xlabel('Fiyat')
+    plt.ylabel('Yoğunluk')
+    plt.legend()
+    plt.grid(True)
+    
+    # Şekil benzerliği analizi
+    buy_hist, _ = np.histogram(buy_prices, bins=bins, density=True)
+    sell_hist, _ = np.histogram(sell_prices, bins=bins, density=True)
+    
+    # L-shape testi (Piyasa fiyatına yakın yoğunluk)
+    l_shape_score = pearsonr(buy_hist[:len(buy_hist)//2], 
+                           sell_hist[:len(sell_hist)//2])[0]
+    
+    # U-shape testi (Piyasa fiyatından uzak yoğunluk)
+    u_shape_score = 1 - mean_squared_error(buy_hist[len(buy_hist)//4:3*len(buy_hist)//4], 
+                                         sell_hist[len(sell_hist)//4:3*len(sell_hist)//4])
+    
+    print(f"L-shape Benzerlik Skoru: {l_shape_score:.2f} (1'e yakın=L-shape)")
+    print(f"U-shape Benzerlik Skoru: {u_shape_score:.2f} (1'e yakın=U-shape)")
+    
+    plt.show()
+
+
+3. Mesa ile Entegrasyon
+
+
+class MarketModel(mesa.Model):
+    def __init__(self, N):
+        self.schedule = mesa.time.RandomActivation(self)
+        self.agents = [TraderAgent(i, self) for i in range(N)]
+        
+    def step(self):
+        self.schedule.step()
+        
+        # Her 10 adımda bir analiz yap
+        if self.schedule.steps % 10 == 0:
+            buy_prices, sell_prices = collect_orders(self.agents)
+            mid_price = np.mean([*buy_prices, *sell_prices])
+            analyze_orderbook_shape(buy_prices, sell_prices, mid_price)
+
+
+4. Örnek Ajan Yapısı
+
+class TraderAgent(mesa.Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.alis_fiyati = np.random.normal(100, 2)
+        self.alis_miktari = np.random.randint(1, 10)
+        self.satis_fiyati = np.random.normal(105, 2)
+        self.satis_miktari = np.random.randint(1, 10)
+
+5. Çalıştırma ve Yorumlama
+
+model = MarketModel(100)
+for _ in range(50):
+    model.step()
+
+
+Analiz Sonuçlarını Yorumlama:
+Skor Aralığı	L-Shape Yorumu	U-Shape Yorumu
+0.8 - 1.0	Güçlü L-shape	Güçlü U-shape
+0.6 - 0.8	Orta düzey	    Orta düzey
+< 0.5	     Zayıf	          Zayıf
+
+
+Ek Özellikler:
+Gerçek Zamanlı Takip:
+
+from IPython.display import clear_output
+plt.ion()  # İnteraktif mod
+
+def live_plot():
+    while True:
+        clear_output(wait=True)
+        buy, sell = collect_orders(model.agents)
+        analyze_orderbook_shape(buy, sell, np.mean([*buy,*sell]))
+        plt.pause(0.1)
+
+Otomatik Şekil Tanıma:
+
+def detect_shape(l_score, u_score):
+    if abs(l_score - u_score) < 0.2:
+        return "Hibrit/Karma"
+    return "L-shape" if l_score > u_score else "U-shape"
+
+
+Bu kod, ajan tabanlı simülasyonunuzdaki emir defteri dinamiğini:
+
+Görselleştirir
+
+Nicel olarak ölçer
+
+Piyasa koşullarına göre sınıflandırır
+
+Pro Tip: Gerçekçilik için alis_fiyati ve satis_fiyati dağılımlarınızı piyasa volatilitesine göre ayarlayın (örn. GARCH modeliyle).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
