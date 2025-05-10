@@ -1,0 +1,54 @@
+#  bir finansal varlık fiyatının zaman içerisindeki rastgele hareketi
+"""
+Aşağıda basit bir finansal yapay modelleme kodu örneği bulabilirsin. Bu Python kodu, bir stokastik süreç olan Geometrik Brown Hareketi'ni (GBM) kullanarak bir finansal varlığın fiyatını simüle eder. 
+Bu yöntem, hisse senedi fiyatlarını tahmin etmek veya bir finansal varlığın zaman içerisindeki fiyat hareketini modellemek için yaygın olarak kullanılır.
+
+Açıklamalar:
+S0: Başlangıç fiyatı (örneğin bir hisse senedi fiyatı).
+
+mu: Getiri oranı (ortalama büyüme oranı).
+
+sigma: Volatilite, yani fiyatların ne kadar dalgalandığını gösterir.
+
+T: Toplam zaman dilimi (örneğin bir yıl).
+
+dt: Zaman adımı (küçük bir zaman dilimi).
+
+N: Zaman adım sayısı (T/dt).
+
+W: Normal dağılımdan rastgele örnekler, stokastik bir süreç oluşturmak için kullanılır.
+
+Bu model basit bir finansal varlık fiyatının zaman içerisindeki rastgele hareketini taklit eder. 
+Daha karmaşık finansal modeller için ileri düzey stokastik süreçler veya makine öğrenimi teknikleri eklenebilir.
+
+
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parametreler
+S0 = 100  # Başlangıç fiyatı
+mu = 0.05  # Getiri oranı (drift)
+sigma = 0.2  # Volatilite (standart sapma)
+T = 1  # Zaman dilimi (yıl)
+dt = 0.01  # Zaman adımı
+N = int(T / dt)  # Zaman adım sayısı
+t = np.linspace(0, T, N)  # Zaman vektörü
+
+# Rastgele bir yürüyüş oluşturmak için normal dağılımdan örnekler
+W = np.random.normal(0, 1, N) * np.sqrt(dt)
+
+# Geometrik Brownian Hareketi (GBM) modeli
+S = np.zeros(N)
+S[0] = S0
+
+for i in range(1, N):
+    S[i] = S[i-1] * np.exp((mu - 0.5 * sigma**2) * dt + sigma * W[i])
+
+# Sonuçları görselleştirme
+plt.plot(t, S)
+plt.title('Geometrik Brown Hareketi ile Simülasyon')
+plt.xlabel('Zaman (Yıl)')
+plt.ylabel('Fiyat')
+plt.show()
