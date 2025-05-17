@@ -1,0 +1,40 @@
+
+"""
+Aşağıdaki kodda shares değerinin eksi olmasına izin veriliyor mu?
+
+FundamentalAgent sınıfı yapısında shares (hisse) değerinin eksi olmasına izin verilmiyor.
+
+Bunun nedenleri şunlardır:
+
+Başlangıç Değeri: __init__ metodunda self.shares = 0 olarak başlatılıyor. Yani başlangıçta hiç hissesi yok.
+Alım İşlemi: step metodundaki alım işleminde (if expected_return > self.risk_aversion: bloğu), 
+shares_to_buy = self.cash // price hesaplanıyor. Bu hesaplama, agent'ın nakit parasına (self.cash) ve 
+piyasa fiyatına (price) bağlı olarak alabileceği tam sayıdaki hisse miktarını buluyor. 
+Daha sonra self.shares += shares_to_buy ile bu hisse miktarı mevcut hisse sayısına ekleniyor. 
+Bu işlem, hisse sayısını artırır veya sıfır bırakır, asla eksi yapmaz.
+Satış İşlemi: Satış işleminde (elif expected_return < -self.risk_aversion: bloğu), 
+self.cash += self.shares * price ile mevcut tüm hisseler satılıyor ve paraya çevriliyor. 
+Ardından self.shares = 0 ile agent'ın hisse sayısı sıfıra eşitleniyor. 
+Bu işlem de hisse sayısını eksi yapmaz.
+
+"""
+
+
+
+
+    def step(self):
+        news = self.model.news.current_news
+        expected_return = news * self.sensitivity
+
+        # Karar mekanizması: risk duyarlılığına göre al/sat
+        if expected_return > self.risk_aversion:
+            # Alım yap
+            price = self.model.price
+            shares_to_buy = self.cash // price
+            self.shares += shares_to_buy
+            self.cash -= shares_to_buy * price
+        elif expected_return < -self.risk_aversion:
+            # Satış yap
+            price = self.model.price
+            self.cash += self.shares * price
+            self.shares = 0
