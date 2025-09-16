@@ -1,10 +1,598 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LingoHub - Dil Öğrenme Platformu</title>
+    <style>
+        /* Genel Stil */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #58a6ff;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        header {
+            background-color: #161b22;
+            padding: 16px 0;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .logo h1 {
+            font-size: 20px;
+            color: #f0f6fc;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: #c9d1d9;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        nav a:hover {
+            color: #58a6ff;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline {
+            border: 1px solid #30363d;
+            background: transparent;
+            color: #c9d1d9;
+        }
+        
+        .btn-primary {
+            background-color: #238636;
+            border: 1px solid #238636;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.8;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        }
+        
+        .hero h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #f0f6fc;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: #8b949e;
+        }
+        
+        /* Diller Bölümü */
+        .languages {
+            padding: 60px 0;
+            background-color: #161b22;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #f0f6fc;
+            font-size: 32px;
+        }
+        
+        .language-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .language-card {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .language-card h3 {
+            margin-bottom: 10px;
+            color: #58a6ff;
+        }
+        
+        .language-card p {
+            color: #8b949e;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #30363d;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #3fb950;
+            border-radius: 4px;
+        }
+        
+        /* Bölümler */
+        .sections {
+            padding: 60px 0;
+        }
+        
+        .section-tabs {
+            display: flex;
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 30px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid #f78166;
+            color: #f0f6fc;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .module-list {
+            list-style: none;
+        }
+        
+        .module-item {
+            padding: 15px;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background-color: #161b22;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .module-info h4 {
+            color: #58a6ff;
+            margin-bottom: 5px;
+        }
+        
+        .module-info p {
+            color: #8b949e;
+            font-size: 14px;
+        }
+        
+        .module-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            background-color: #238636;
+            color: white;
+        }
+        
+        .status-inprogress {
+            background-color: #daaa3f;
+            color: white;
+        }
+        
+        .status-notstarted {
+            background-color: #30363d;
+            color: #8b949e;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #161b22;
+            padding: 40px 0;
+            border-top: 1px solid #30363d;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-column h3 {
+            color: #f0f6fc;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-column a {
+            color: #8b949e;
+            transition: color 0.2s;
+        }
+        
+        .footer-column a:hover {
+            color: #58a6ff;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            color: #8b949e;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .section-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
 <body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 16 16" fill="white">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <h1>LingoHub</h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#">Ana Sayfa</a></li>
+                    <li><a href="#">Diller</a></li>
+                    <li><a href="#">Topluluk</a></li>
+                    <li><a href="#">Hakkımızda</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                <button class="btn btn-outline">Giriş Yap</button>
+                <button class="btn btn-primary">Kayıt Ol</button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Kod yazmayı öğrenir gibi dil öğrenin</h2>
+            <p>GitHub tarzında, bölüm bölüm ilerleyen interaktif dil eğitim platformu. İster İngilizce, ister İspanyolca, isterseniz de Japonca öğrenin.</p>
+            <button class="btn btn-primary">Hemen Başla</button>
+        </div>
+    </section>
+    
+    <!-- Diller Bölümü -->
+    <section class="languages">
+        <div class="container">
+            <h2 class="section-title">Öğrenmeye Başlayın</h2>
+            
+            <div class="language-cards">
+                <div class="language-card">
+                    <h3>İngilizce</h3>
+                    <p>Dünyanın en yaygın dili</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 30%;"></div>
+                    </div>
+                    <p>%30 tamamlandı</p>
+                </div>
+                
+                <div class="language-card">
+                    <h3>İspanyolca</h3>
+                    <p>500 milyondan fazla konuşan</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 15%;"></div>
+                    </div>
+                    <p>%15 tamamlandı</p>
+                </div>
+                
+                <div class="language-card">
+                    <h3>Fransızca</h3>
+                    <p>Aşkın ve diplomasinin dili</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 5%;"></div>
+                    </div>
+                    <p>%5 tamamlandı</p>
+                </div>
+                
+                <div class="language-card">
+                    <h3>Japonca</h3>
+                    <p>Zengin kültürün kapılarını açın</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 0%;"></div>
+                    </div>
+                    <p>Henüz başlanmadı</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Bölümler -->
+    <section class="sections">
+        <div class="container">
+            <h2 class="section-title">İngilizce Öğrenim Yolculuğunuz</h2>
+            
+            <div class="section-tabs">
+                <div class="tab active" data-tab="beginner">Başlangıç Seviyesi</div>
+                <div class="tab" data-tab="intermediate">Orta Seviye</div>
+                <div class="tab" data-tab="advanced">İleri Seviye</div>
+            </div>
+            
+            <div class="tab-content active" id="beginner">
+                <ul class="module-list">
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>Temel Selamlaşmalar</h4>
+                            <p>Merhaba, nasılsın ve günlük diyaloglar</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-completed">Tamamlandı</span>
+                            <button class="btn btn-outline">Tekrarla</button>
+                        </div>
+                    </li>
+                    
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>Sayılar ve Renkler</h4>
+                            <p>1'den 100'e kadar sayılar ve temel renkler</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-completed">Tamamlandı</span>
+                            <button class="btn btn-outline">Tekrarla</button>
+                        </div>
+                    </li>
+                    
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>Günlük Aktiviteler</h4>
+                            <p>Günlük rutinleri anlatma</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-inprogress">Devam Ediyor</span>
+                            <button class="btn btn-primary">Devam Et</button>
+                        </div>
+                    </li>
+                    
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>Basit Zamanlar</h4>
+                            <p>Geniş ve şimdiki zaman</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-notstarted">Başlanmadı</span>
+                            <button class="btn btn-primary">Başla</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="tab-content" id="intermediate">
+                <ul class="module-list">
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>Geçmiş Zaman</h4>
+                            <p>Geçmişte yaşanan olayları anlatma</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-notstarted">Başlanmadı</span>
+                            <button class="btn btn-primary">Başla</button>
+                        </div>
+                    </li>
+                    
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>Deyimler ve Atasözleri</h4>
+                            <p>Günlük konuşmada kullanılan deyimler</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-notstarted">Başlanmadı</span>
+                            <button class="btn btn-primary">Başla</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="tab-content" id="advanced">
+                <ul class="module-list">
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>İş İngilizcesi</h4>
+                            <p>Profesyonel ortamlarda iletişim</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-notstarted">Başlanmadı</span>
+                            <button class="btn btn-primary">Başla</button>
+                        </div>
+                    </li>
+                    
+                    <li class="module-item">
+                        <div class="module-info">
+                            <h4>Akademik Yazım</h4>
+                            <p>Makale ve tez yazım teknikleri</p>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-notstarted">Başlanmadı</span>
+                            <button class="btn btn-primary">Başla</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>LingoHub</h3>
+                    <ul>
+                        <li><a href="#">Hakkımızda</a></li>
+                        <li><a href="#">Kariyer</a></li>
+                        <li><a href="#">İletişim</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Ürün</h3>
+                    <ul>
+                        <li><a href="#">Özellikler</a></li>
+                        <li><a href="#">Fiyatlandırma</a></li>
+                        <li><a href="#">SSS</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Topluluk</h3>
+                    <ul>
+                        <li><a href="#">Forum</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Etkinlikler</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Yasal</h3>
+                    <ul>
+                        <li><a href="#">Gizlilik Politikası</a></li>
+                        <li><a href="#">Kullanım Şartları</a></li>
+                        <li><a href="#">Çerez Politikası</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 LingoHub. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
 
-<h1>AcademiaTurkiye</h1>
-<p>Ajan Tabanl� Modellemeye Giri�</p>
-
-
+    <script>
+        // Sekme değiştirme işlevselliği
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Aktif sekme stilini güncelle
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                tab.classList.add('active');
+                
+                // İlgili içeriği göster
+                const tabId = tab.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>
