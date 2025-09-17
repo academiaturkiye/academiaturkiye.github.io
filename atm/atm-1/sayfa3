@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Küçük ve Ortalanmış Tablo</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fafafa;
+            color: #333;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        h2 {
+            color: #444;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            border-bottom: 1px dashed #aaa;
+            padding-bottom: 6px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+            font-size: 13px;
+        }
+        
+        /* Küçük ve ortalanmış tablo */
+        .small-table {
+            width: 100%;
+            margin: 15px auto;
+            font-size: 11px;
+            border-collapse: collapse;
+        }
+        .small-table th, 
+        .small-table td {
+            padding: 4px 6px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .small-table th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
+        .small-table tr {
+            height: 22px;
+        }
+        
+        .table-caption {
+            font-style: italic;
+            margin: -12px 0 15px 0;
+            text-align: center;
+            color: #666;
+            font-size: 11px;
+        }
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #666;
+            font-size: 11px;
+            border-top: 1px dashed #aaa;
+            padding-top: 12px;
+        }
+        ul {
+            margin-bottom: 12px;
+            padding-left: 18px;
+            font-size: 13px;
+        }
+        li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Şirket Çalışanları ve Performans Verileri</h1>
+        <p class="table-caption">Bu tablo, şirket çalışanlarının 2023 yılı performans verilerini göstermektedir.</p>
+        
+        <h2>Çeyrek Dönem Performans Metrikleri</h2>
+        
+        <!-- Küçük ve ortalanmış tablo -->
+        <table class="small-table">
+            <thead>
+                <tr>
+                    <th>Çalışan No</th>
+                    <th>Adı Soyadı</th>
+                    <th>Departman</th>
+                    <th>Pozisyon</th>
+                    <th>Projeler</th>
+                    <th>Puan</th>
+                    <th>Değerlendirme</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Ahmet Yılmaz</td>
+                    <td>Yazılım</td>
+                    <td>Kıdemli Yazılım Müh.</td>
+                    <td>12</td>
+                    <td>94</td>
+                    <td>Çok İyi</td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Ayşe Demir</td>
+                    <td>Pazarlama</td>
+                    <td>Pazarlama Uzmanı</td>
+                    <td>8</td>
+                    <td>87</td>
+                    <td>İyi</td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Mehmet Kaya</td>
+                    <td>İnsan Kaynakları</td>
+                    <td>IK Yöneticisi</td>
+                    <td>6</td>
+                    <td>92</td>
+                    <td>Çok İyi</td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>Zeynep Çelik</td>
+                    <td>Finans</td>
+                    <td>Mali Müşavir</td>
+                    <td>9</td>
+                    <td>89</td>
+                    <td>İyi</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>Performans Değerlendirme Süreci</h2>
+        <p>Şirketimizde çalışan performans değerlendirmeleri dört ana kriter üzerinden yapılmaktadır. Bu kriterler çalışanların kariyer gelişimlerini desteklemek ve şirket hedeflerine ulaşmada katkılarını ölçmek için tasarlanmıştır.</p>
+        
+        <h3>Değerlendirme Kriterleri</h3>
+        <p>Performans puanları aşağıdaki kriterlere göre belirlenmiştir:</p>
+        <ul>
+            <li>Proje teslim zamanlaması ve kalitesi</li>
+            <li>Takım çalışması ve işbirliği</li>
+            <li>Problem çözme becerileri</li>
+            <li>Müşteri memnuniyeti geri bildirimleri</li>
+        </ul>
+        
+        <h3>Değerlendirme Süreci</h3>
+        <p>Performans değerlendirmeleri yılda iki kez, çeyrek dönemlerin sonunda gerçekleştirilir. Değerlendirme sonuçları, çalışanların kariyer gelişim planlaması ve eğitim ihtiyaçlarının belirlenmesi için kullanılır.</p>
+        
+        <h2>Sonuçlar ve İlerleme Planı</h2>
+        <p>Değerlendirme sonuçlarına göre, tüm çalışanlarımız genel olarak yüksek performans göstermişlerdir. Önümüzdeki dönem için, performans puanı 90'ın altında kalan çalışanlarımıza yönelik kişisel gelişim planları oluşturulacaktır.</p>
+        
+        <div class="footer">
+            <p>© 2023 Şirket Adı - İnsan Kaynakları Departmanı</p>
+        </div>
+    </div>
+</body>
+</html>
