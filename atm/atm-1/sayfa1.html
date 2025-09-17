@@ -3,69 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4x7 Tablo Örneği</title>
+    <title>Sade Tablo Örneği</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f7f9;
+            background-color: #fafafa;
             color: #333;
+            line-height: 1.5;
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
             background-color: white;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         h1 {
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 15px;
+            color: #222;
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: bold;
         }
         h2 {
-            color: #3498db;
+            color: #444;
             margin-top: 30px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 25px 0;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin: 20px 0;
+            font-size: 14px;
         }
         th, td {
-            padding: 12px 15px;
-            text-align: center;
+            padding: 8px 12px;
+            text-align: left;
             border: 1px solid #ddd;
         }
         th {
-            background-color: #3498db;
-            color: white;
+            background-color: #f9f9f9;
             font-weight: bold;
         }
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        tr:hover {
-            background-color: #e8f4fc;
-            transition: background-color 0.2s;
+        tr {
+            height: 32px;
         }
         .table-caption {
             font-style: italic;
-            margin-bottom: 20px;
+            margin: -15px 0 20px 0;
             text-align: center;
-            color: #7f8c8d;
+            color: #666;
+            font-size: 14px;
         }
         .footer {
             margin-top: 30px;
             text-align: center;
-            color: #7f8c8d;
-            font-size: 0.9em;
+            color: #666;
+            font-size: 13px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
         }
     </style>
 </head>
@@ -128,7 +140,10 @@
             </tbody>
         </table>
         
-        <h2>Performans Değerlendirme Kriterleri</h2>
+        <h2>Performans Değerlendirme Süreci</h2>
+        <p>Şirketimizde çalışan performans değerlendirmeleri dört ana kriter üzerinden yapılmaktadır. Bu kriterler çalışanların kariyer gelişimlerini desteklemek ve şirket hedeflerine ulaşmada katkılarını ölçmek için tasarlanmıştır.</p>
+        
+        <h3>Değerlendirme Kriterleri</h3>
         <p>Performans puanları aşağıdaki kriterlere göre belirlenmiştir:</p>
         <ul>
             <li>Proje teslim zamanlaması ve kalitesi</li>
@@ -137,8 +152,14 @@
             <li>Müşteri memnuniyeti geri bildirimleri</li>
         </ul>
         
+        <h3>Değerlendirme Süreci</h3>
+        <p>Performans değerlendirmeleri yılda iki kez, çeyrek dönemlerin sonunda gerçekleştirilir. Değerlendirme sonuçları, çalışanların kariyer gelişim planlaması ve eğitim ihtiyaçlarının belirlenmesi için kullanılır.</p>
+        
+        <h2>Sonuçlar ve İlerleme Planı</h2>
+        <p>Değerlendirme sonuçlarına göre, tüm çalışanlarımız genel olarak yüksek performans göstermişlerdir. Önümüzdeki dönem için, performans puanı 90'ın altında kalan çalışanlarımıza yönelik kişisel gelişim planları oluşturulacaktır.</p>
+        
         <div class="footer">
-            <p>© 2023 Şirket Adı - Tüm hakları saklıdır.</p>
+            <p>© 2023 Şirket Adı - İnsan Kaynakları Departmanı</p>
         </div>
     </div>
 </body>
