@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4x7 Tablo Örneği</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7f9;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #e8f4fc;
+            transition: background-color 0.2s;
+        }
+        .table-caption {
+            font-style: italic;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Şirket Çalışanları ve Performans Verileri</h1>
+        <p class="table-caption">Bu tablo, şirket çalışanlarının 2023 yılı performans verilerini göstermektedir.</p>
+        
+        <h2>Çeyrek Dönem Performans Metrikleri</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Çalışan No</th>
+                    <th>Adı Soyadı</th>
+                    <th>Departman</th>
+                    <th>Pozisyon</th>
+                    <th>Tamamlanan Projeler</th>
+                    <th>Performans Puanı</th>
+                    <th>Çeyrek Değerlendirme</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Ahmet Yılmaz</td>
+                    <td>Yazılım Geliştirme</td>
+                    <td>Kıdemli Yazılım Mühendisi</td>
+                    <td>12</td>
+                    <td>94</td>
+                    <td>Çok İyi</td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Ayşe Demir</td>
+                    <td>Pazarlama</td>
+                    <td>Pazarlama Uzmanı</td>
+                    <td>8</td>
+                    <td>87</td>
+                    <td>İyi</td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Mehmet Kaya</td>
+                    <td>İnsan Kaynakları</td>
+                    <td>IK Yöneticisi</td>
+                    <td>6</td>
+                    <td>92</td>
+                    <td>Çok İyi</td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>Zeynep Çelik</td>
+                    <td>Finans</td>
+                    <td>Mali Müşavir</td>
+                    <td>9</td>
+                    <td>89</td>
+                    <td>İyi</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>Performans Değerlendirme Kriterleri</h2>
+        <p>Performans puanları aşağıdaki kriterlere göre belirlenmiştir:</p>
+        <ul>
+            <li>Proje teslim zamanlaması ve kalitesi</li>
+            <li>Takım çalışması ve işbirliği</li>
+            <li>Problem çözme becerileri</li>
+            <li>Müşteri memnuniyeti geri bildirimleri</li>
+        </ul>
+        
+        <div class="footer">
+            <p>© 2023 Şirket Adı - Tüm hakları saklıdır.</p>
+        </div>
+    </div>
+</body>
+</html>
