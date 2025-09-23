@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sade Metin Sayfası</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #fff;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .center-title {
+            text-align: center;
+            flex: 1;
+            min-width: 100%;
+            order: 1;
+            margin-bottom: 20px;
+        }
+        .left-title {
+            text-align: left;
+            flex: 1;
+            order: 2;
+            padding-right: 15px;
+        }
+        .right-title {
+            text-align: right;
+            flex: 1;
+            order: 3;
+            padding-left: 15px;
+        }
+        h1 {
+            font-size: 32px;
+            margin: 0;
+            color: #2c3e50;
+        }
+        h2 {
+            font-size: 20px;
+            margin: 0;
+            color: #2980b9;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .content {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .left-content, .right-content {
+            flex: 1;
+        }
+        
+        /* Arama Kutusu Stilleri */
+        .search-container {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .search-box {
+            width: 70%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: #2471a3;
+        }
+        .search-results {
+            margin-top: 20px;
+            text-align: left;
+            display: none;
+        }
+        .result-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-left: 4px solid #2980b9;
+            border-radius: 4px;
+        }
+        .no-results {
+            color: #e74c3c;
+            font-style: italic;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+            }
+            .left-title, .right-title {
+                min-width: 100%;
+                text-align: center;
+                padding: 0;
+                margin-bottom: 15px;
+            }
+            .content {
+                flex-direction: column;
+            }
+            .search-box {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="center-title">
+            <h1>Basit Bir Metin Sayfası</h1>
+        </div>
+        <div class="left-title">
+            <h2>Sade Tasarımın Faydaları</h2>
+        </div>
+        <div class="right-title">
+            <h2>HTML Hakkında</h2>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="left-content">
+            <p>Sade tasarım, okunabilirliği artırır ve kullanıcıların içeriğe odaklanmasını sağlar. Gereksiz görsel öğeler olmadığında, metin ön plana çıkar ve mesaj daha net iletilir.</p>
+            
+            <p>Bu tür sade sayfalar, daha hızlı yüklenir ve her türlü cihazda sorunsuz görüntülenir. Ayrıca, erişilebilirlik açısından da daha iyi sonuçlar verir.</p>
+            
+            <p>Minimalist tasarım, kullanıcı deneyimini iyileştirir ve ana içeriğin daha iyi anlaşılmasını sağlar. Sade arayüzler, dikkat dağıtıcı öğeleri ortadan kaldırarak kullanıcıların hedeflerine daha hızlı ulaşmalarına yardımcı olur.</p>
+        </div>
+        
+        <div class="right-content">
+            <p>HTML (HyperText Markup Language), web sayfalarını oluşturmak için kullanılan standart işaretleme dilidir. HTML, web tarayıcılarına bir belgenin yapısını ve içeriğini nasıl görüntüleyeceklerini söyleyen etiketlerden oluşur.</p>
+            
+            <p>HTML etiketleri, metin parçalarını işaretlemek ve belgeye yapı kazandırmak için kullanılır. Örneğin, başlıklar, paragraflar, listeler ve bağlantılar oluşturabilirsiniz.</p>
+            
+            <p>HTML5, HTML'in en son sürümüdür ve modern web uygulamaları için gerekli olan birçok yeni özellik ve API sunar. Bu, daha etkileşimli ve zengin web deneyimleri oluşturmayı mümkün kılar.</p>
+        </div>
+    </div>
+    
+    <!-- Arama Kutusu -->
+    <div class="search-container">
+        <h3>Site İçi Arama</h3>
+        <input type="text" class="search-box" id="searchInput" placeholder="Aranacak kelimeyi girin...">
+        <button class="search-button" onclick="performSearch()">Ara</button>
+        
+        <div class="search-results" id="searchResults">
+            <!-- Arama sonuçları burada görünecek -->
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 Sade Metin Sayfası</p>
+    </div>
+
+    <script>
+        // Basit arama işlevselliği
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+            
+            // Arama kutusu boşsa uyarı ver
+            if (searchTerm === '') {
+                alert('Lütfen bir arama terimi girin.');
+                return;
+            }
+            
+            // Sayfa içeriğini al
+            const pageContent = document.body.innerText.toLowerCase();
+            
+            // Arama sonuçlarını temizle
+            resultsContainer.innerHTML = '';
+            
+            // Arama terimini içeren paragrafları bul
+            const paragraphs = document.querySelectorAll('p');
+            let foundResults = false;
+            
+            paragraphs.forEach((paragraph, index) => {
+                if (paragraph.innerText.toLowerCase().includes(searchTerm)) {
+                    foundResults = true;
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    
+                    // Paragrafın ilk 100 karakterini al
+                    const contentPreview = paragraph.innerText.substring(0, 100) + '...';
+                    
+                    resultItem.innerHTML = `
+                        <strong>Sonuç ${index + 1}:</strong><br>
+                        ${contentPreview}<br>
+                        <em>Sayfa içeriğinde bulundu</em>
+                    `;
+                    
+                    resultsContainer.appendChild(resultItem);
+                }
+            });
+            
+            // Sonuç bulunamazsa mesaj göster
+            if (!foundResults) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-results';
+                noResults.textContent = `"${searchTerm}" için hiç sonuç bulunamadı.`;
+                resultsContainer.appendChild(noResults);
+            }
+            
+            // Arama sonuçlarını göster
+            resultsContainer.style.display = 'block';
+        }
+        
+        // Enter tuşu ile arama yapma
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Sayfa yüklendiğinde arama kutusuna odaklan
+        window.onload = function() {
+            document.getElementById('searchInput').focus();
+        };
+    </script>
+</body>
+</html>
