@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sade Metin Sayfası</title>
+    <title>Sade Metin Sayfası - Arama</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -100,14 +100,39 @@
             display: none;
         }
         .result-item {
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
             background-color: white;
             border-left: 4px solid #2980b9;
             border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .result-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .result-link {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        .result-link:hover {
+            text-decoration: underline;
+        }
+        .result-preview {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
         }
         .no-results {
             color: #e74c3c;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
             font-style: italic;
         }
         
@@ -173,9 +198,9 @@
     
     <!-- Arama Kutusu -->
     <div class="search-container">
-        <h3>Site İçi Arama</h3>
+        <h3>GitHub Klasör İçi Arama</h3>
         <input type="text" class="search-box" id="searchInput" placeholder="Aranacak kelimeyi girin...">
-        <button class="search-button" onclick="performSearch()">Ara</button>
+        <button class="search-button" onclick="searchInGitHubPages()">Ara</button>
         
         <div class="search-results" id="searchResults">
             <!-- Arama sonuçları burada görünecek -->
@@ -187,65 +212,128 @@
     </div>
 
     <script>
-        // Basit arama işlevselliği
-        function performSearch() {
+        // GitHub Pages'ta bulunması muhtemel sayfa listesi
+        const pageList = [
+            'index.html',
+            'hakkimda.html',
+            'projeler.html',
+            'iletisim.html',
+            'blog.html',
+            'servisler.html',
+            'referanslar.html'
+        ];
+
+        async function searchInGitHubPages() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             const resultsContainer = document.getElementById('searchResults');
             
-            // Arama kutusu boşsa uyarı ver
             if (searchTerm === '') {
                 alert('Lütfen bir arama terimi girin.');
                 return;
             }
             
-            // Sayfa içeriğini al
-            const pageContent = document.body.innerText.toLowerCase();
+            resultsContainer.innerHTML = '<div class="loading">Arama yapılıyor...</div>';
+            resultsContainer.style.display = 'block';
             
-            // Arama sonuçlarını temizle
-            resultsContainer.innerHTML = '';
+            let allResults = [];
             
-            // Arama terimini içeren paragrafları bul
-            const paragraphs = document.querySelectorAll('p');
-            let foundResults = false;
-            
-            paragraphs.forEach((paragraph, index) => {
-                if (paragraph.innerText.toLowerCase().includes(searchTerm)) {
-                    foundResults = true;
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'result-item';
-                    
-                    // Paragrafın ilk 100 karakterini al
-                    const contentPreview = paragraph.innerText.substring(0, 100) + '...';
-                    
-                    resultItem.innerHTML = `
-                        <strong>Sonuç ${index + 1}:</strong><br>
-                        ${contentPreview}<br>
-                        <em>Sayfa içeriğinde bulundu</em>
-                    `;
-                    
-                    resultsContainer.appendChild(resultItem);
+            // Tüm sayfalarda arama yap
+            for (const page of pageList) {
+                try {
+                    const pageResults = await searchInPage(page, searchTerm);
+                    if (pageResults.length > 0) {
+                        allResults = allResults.concat(pageResults);
+                    }
+                } catch (error) {
+                    console.log(`${page} sayfası yüklenemedi:`, error);
                 }
-            });
-            
-            // Sonuç bulunamazsa mesaj göster
-            if (!foundResults) {
-                const noResults = document.createElement('div');
-                noResults.className = 'no-results';
-                noResults.textContent = `"${searchTerm}" için hiç sonuç bulunamadı.`;
-                resultsContainer.appendChild(noResults);
             }
             
-            // Arama sonuçlarını göster
-            resultsContainer.style.display = 'block';
+            // Sonuçları göster
+            displayResults(allResults, searchTerm, resultsContainer);
         }
-        
-        // Enter tuşu ile arama yapma
+
+        async function searchInPage(pageUrl, searchTerm) {
+            try {
+                // Sayfayı fetch ile yükle
+                const response = await fetch(pageUrl);
+                if (!response.ok) throw new Error('Sayfa bulunamadı');
+                
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                
+                // Sayfa başlığını al
+                const pageTitle = doc.querySelector('title') ? 
+                    doc.querySelector('title').textContent : 
+                    pageUrl.replace('.html', '').replace(/-/g, ' ');
+                
+                // Tüm metin içeriğini al
+                const pageContent = doc.body.textContent.toLowerCase();
+                
+                // Arama terimini kontrol et
+                if (pageContent.includes(searchTerm)) {
+                    // Terimin geçtiği paragrafları bul
+                    const paragraphs = doc.querySelectorAll('p');
+                    const matchingParagraphs = [];
+                    
+                    paragraphs.forEach(p => {
+                        if (p.textContent.toLowerCase().includes(searchTerm)) {
+                            matchingParagraphs.push(p.textContent.substring(0, 150) + '...');
+                        }
+                    });
+                    
+                    return [{
+                        title: pageTitle,
+                        url: pageUrl,
+                        preview: matchingParagraphs.length > 0 ? matchingParagraphs[0] : 
+                                pageContent.substring(0, 150) + '...',
+                        matchCount: (pageContent.match(new RegExp(searchTerm, 'gi')) || []).length
+                    }];
+                }
+                
+                return [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function displayResults(results, searchTerm, container) {
+            container.innerHTML = '';
+            
+            if (results.length === 0) {
+                container.innerHTML = '<div class="no-results">"' + searchTerm + '" için hiç sonuç bulunamadı.</div>';
+                return;
+            }
+            
+            // Sonuçları eşleşme sayısına göre sırala
+            results.sort((a, b) => b.matchCount - a.matchCount);
+            
+            results.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                resultItem.innerHTML = `
+                    <div class="result-title">
+                        <a href="${result.url}" class="result-link">${result.title}</a>
+                        <span style="font-size: 12px; color: #666; margin-left: 10px;">
+                            (${result.matchCount} eşleşme)
+                        </span>
+                    </div>
+                    <div class="result-preview">${result.preview}</div>
+                `;
+                
+                container.appendChild(resultItem);
+            });
+        }
+
+        // Enter tuşu ile arama
         document.getElementById('searchInput').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                performSearch();
+                searchInGitHubPages();
             }
         });
-        
+
         // Sayfa yüklendiğinde arama kutusuna odaklan
         window.onload = function() {
             document.getElementById('searchInput').focus();
