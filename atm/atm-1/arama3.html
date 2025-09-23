@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çoklu Sayfa Arama Sistemi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #fff;
+        }
+        
+        .search-container {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .search-box {
+            width: 70%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        .search-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .search-results {
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .result-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-left: 4px solid #2980b9;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .result-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .result-link {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        
+        .result-preview {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .no-results {
+            color: #e74c3c;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .folder-results {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GitHub Klasör Arama Sistemi</h1>
+    <p>Bu sistem, atm-1.html klasörü ve altındaki tüm HTML sayfalarında arama yapar.</p>
+
+    <!-- Arama Kutusu -->
+    <div class="search-container">
+        <h3>Klasör İçi Çoklu Sayfa Arama</h3>
+        <input type="text" class="search-box" id="searchInput" placeholder="Aranacak kelimeyi girin...">
+        <button class="search-button" onclick="searchInAllPages()">Tüm Sayfalarda Ara</button>
+        
+        <div class="search-results" id="searchResults">
+            <!-- Arama sonuçları burada görünecek -->
+        </div>
+    </div>
+
+    <script>
+        // Klasör yapısı ve sayfa listesi
+        const folderStructure = {
+            'atm-1.html': [
+                'index.html',
+                'unit-1.html',
+                'unit-2.html', 
+                'unit-3.html',
+                'unit-4.html',
+                'vocabulary.html',
+                'grammar.html',
+                'exercises.html',
+                'reading.html',
+                'writing.html'
+            ],
+            'ana-dizin': [
+                'index.html',
+                'hakkimda.html',
+                'projeler.html',
+                'blog.html',
+                'iletisim.html'
+            ]
+        };
+
+        // Tüm sayfaların tam yollarını oluştur
+        function getAllPagePaths() {
+            const allPages = [];
+            
+            for (const [folder, pages] of Object.entries(folderStructure)) {
+                pages.forEach(page => {
+                    if (folder === 'ana-dizin') {
+                        allPages.push(page);
+                    } else {
+                        allPages.push(`${folder}/${page}`);
+                    }
+                });
+            }
+            
+            return allPages;
+        }
+
+        async function searchInAllPages() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+            
+            if (searchTerm === '') {
+                alert('Lütfen bir arama terimi girin.');
+                return;
+            }
+            
+            resultsContainer.innerHTML = '<div class="loading">Tüm sayfalarda arama yapılıyor...</div>';
+            
+            const allPages = getAllPagePaths();
+            let allResults = [];
+            
+            // Tüm sayfalarda sırayla arama yap
+            for (const pagePath of allPages) {
+                try {
+                    console.log(`Aranıyor: ${pagePath}`);
+                    const pageResults = await searchInPage(pagePath, searchTerm);
+                    if (pageResults.length > 0) {
+                        allResults = allResults.concat(pageResults);
+                    }
+                } catch (error) {
+                    console.log(`${pagePath} sayfası yüklenemedi:`, error);
+                }
+            }
+            
+            // Sonuçları göster
+            displayResults(allResults, searchTerm, resultsContainer);
+        }
+
+        async function searchInPage(pagePath, searchTerm) {
+            try {
+                // Sayfayı fetch ile yükle
+                const response = await fetch(pagePath);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                
+                // Sayfa başlığını al
+                let pageTitle = 'Başlık Yok';
+                if (doc.querySelector('title')) {
+                    pageTitle = doc.querySelector('title').textContent;
+                } else if (doc.querySelector('h1')) {
+                    pageTitle = doc.querySelector('h1').textContent;
+                }
+                
+                // Tüm metin içeriğini al
+                const pageContent = doc.body.textContent.toLowerCase();
+                
+                // Arama terimini kontrol et
+                if (pageContent.includes(searchTerm)) {
+                    const matches = (pageContent.match(new RegExp(searchTerm, 'gi')) || []);
+                    const matchCount = matches.length;
+                    
+                    // Terimin geçtiği ilk paragrafı bul
+                    let preview = '';
+                    const paragraphs = doc.querySelectorAll('p');
+                    for (const p of paragraphs) {
+                        if (p.textContent.toLowerCase().includes(searchTerm)) {
+                            const text = p.textContent;
+                            const index = text.toLowerCase().indexOf(searchTerm);
+                            preview = text.substring(Math.max(0, index - 50), Math.min(text.length, index + 100)) + '...';
+                            break;
+                        }
+                    }
+                    
+                    if (!preview) {
+                        // Paragraf bulunamazsa sayfa içeriğinden kesit al
+                        const index = pageContent.indexOf(searchTerm);
+                        if (index !== -1) {
+                            const fullText = doc.body.textContent;
+                            preview = fullText.substring(Math.max(0, index - 50), Math.min(fullText.length, index + 100)) + '...';
+                        }
+                    }
+                    
+                    return [{
+                        title: pageTitle,
+                        url: pagePath,
+                        preview: preview || 'Önizleme mevcut değil',
+                        matchCount: matchCount,
+                        folder: pagePath.includes('/') ? pagePath.split('/')[0] : 'ana-dizin'
+                    }];
+                }
+                
+                return [];
+            } catch (error) {
+                console.error(`${pagePath} arama hatası:`, error);
+                return [];
+            }
+        }
+
+        function displayResults(results, searchTerm, container) {
+            container.innerHTML = '';
+            
+            if (results.length === 0) {
+                container.innerHTML = '<div class="no-results">"' + searchTerm + '" için hiç sonuç bulunamadı.</div>';
+                return;
+            }
+            
+            // Sonuçları klasörlere göre grupla
+            const groupedResults = {};
+            results.forEach(result => {
+                if (!groupedResults[result.folder]) {
+                    groupedResults[result.folder] = [];
+                }
+                groupedResults[result.folder].push(result);
+            });
+            
+            // Her klasör için sonuçları göster
+            for (const [folder, folderResults] of Object.entries(groupedResults)) {
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'folder-results';
+                folderDiv.innerHTML = `<h3>📁 ${folder} Klasörü (${folderResults.length} sonuç)</h3>`;
+                
+                // Klasör içindeki sonuçları eşleşme sayısına göre sırala
+                folderResults.sort((a, b) => b.matchCount - a.matchCount);
+                
+                folderResults.forEach((result, index) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    
+                    resultItem.innerHTML = `
+                        <div class="result-title">
+                            <a href="${result.url}" class="result-link" target="_blank">${result.title}</a>
+                            <span style="font-size: 12px; color: #666; margin-left: 10px;">
+                                (${result.matchCount} eşleşme)
+                            </span>
+                        </div>
+                        <div class="result-preview">${result.preview}</div>
+                        <div style="font-size: 12px; color: #888; margin-top: 5px;">
+                            Dosya: ${result.url}
+                        </div>
+                    `;
+                    
+                    folderDiv.appendChild(resultItem);
+                });
+                
+                container.appendChild(folderDiv);
+            }
+            
+            // Toplam sonuç sayısını göster
+            const totalResults = document.createElement('div');
+            totalResults.style.textAlign = 'center';
+            totalResults.style.marginTop = '20px';
+            totalResults.style.fontWeight = 'bold';
+            totalResults.textContent = `Toplam ${results.length} sonuç bulundu`;
+            container.appendChild(totalResults);
+        }
+
+        // Enter tuşu ile arama
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                searchInAllPages();
+            }
+        });
+
+        // Sayfa yüklendiğinde arama kutusuna odaklan
+        window.onload = function() {
+            document.getElementById('searchInput').focus();
+        };
+
+        // Klasör yapısını konsola yazdır (debug için)
+        console.log('Aranacak sayfa listesi:', getAllPagePaths());
+    </script>
+</body>
+</html>
