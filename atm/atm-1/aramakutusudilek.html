@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DilEğitimi - Ana Sayfa</title>
+    <style>
+        /* Genel Stil */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f6f8fa;
+            color: #24292e;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        header {
+            background-color: #24292e;
+            padding: 16px 0;
+            color: white;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 20px;
+            color: #ffffff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        /* Arama Kutusu Stilleri */
+        .search-container {
+            background-color: #f6f8fa;
+            padding: 20px 0;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .search-box-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #0366d6;
+            border-radius: 6px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #005cc5;
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.3);
+        }
+        
+        .search-button {
+            padding: 12px 20px;
+            background-color: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .search-button:hover {
+            background-color: #005cc5;
+        }
+        
+        .search-results {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e1e4e8;
+            display: none;
+        }
+        
+        .search-highlight {
+            background-color: #fff8c5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .result-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #0366d6;
+            background-color: #f6f8fa;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #586069;
+            font-style: italic;
+        }
+        
+        /* Ana İçerik */
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0366d6;
+        }
+        
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .language-card {
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .language-card h3 {
+            color: #0366d6;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .level-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .level-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .level-list li:before {
+            content: "•";
+            color: #0366d6;
+            position: absolute;
+            left: 0;
+        }
+        
+        .level-list a {
+            color: #586069;
+            text-decoration: none;
+        }
+        
+        .level-list a:hover {
+            color: #0366d6;
+            text-decoration: underline;
+        }
+        
+        /* Seviye Sayfası */
+        .level-content {
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .level-content h2 {
+            color: #0366d6;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .chapter-list {
+            list-style: none;
+        }
+        
+        .chapter-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+        }
+        
+        .chapter-item h3 {
+            color: #24292e;
+            margin-bottom: 10px;
+        }
+        
+        .chapter-item p {
+            color: #586069;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #24292e;
+            padding: 30px 0;
+            color: #ffffff;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: #ffffff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .language-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-box-container {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>DilEğitimi</h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="ingilizce.html">İngilizce</a></li>
+                    <li><a href="ispanyolca.html">İspanyolca</a></li>
+                    <li><a href="sayfa2.html">Hakkında</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Arama Kutusu -->
+    <div class="search-container">
+        <div class="container">
+            <div class="search-box-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Sayfa içinde arama yapın...">
+                <button class="search-button" onclick="performSearch()">Ara</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+    
+    <!-- Ana İçerik -->
+    <main class="main-content container">
+        <h1 class="page-title">Dil Öğrenme Platformuna Hoşgeldiniz</h1>
+        
+        <p style="text-align: center; margin-bottom: 30px; font-size: 18px;">
+            Kolay ve etkili bir şekilde dil öğrenmek için doğru yerdesiniz. Aşağıdaki dillerden birini seçerek öğrenmeye başlayın.
+        </p>
+        
+        <!-- Örnek Seviye İçeriği (Başlangıç) -->
+        <div class="level-content">
+            <h2>Dilek Kipleri</h2>
+            
+            <ul class="chapter-list">
+                <li class="chapter-item">
+                    <h3><a href="dileksartkipi1.html">İstek, Dilek-Şart ve yeterlilik Kipleri: Olayım, Olabilsem</a></h3>
+                       Öğretmen olabilsem neden olmayayım. Keşke olayım.  Heke ku dikarim bibim mamoste çima nebim. Xwezî bibim. 
+                </li>
+                
+                <li class="chapter-item">
+                    <h3>Bölüm 2: Cümlenin Öğeleri ve Dil Yapısı</h3>
+                    <p>sdfşjakljfadsajşlsdjafşsjfa</p>
+                </li>
+                
+                <li class="chapter-item">
+                    <h3>Bölüm 3: Tamlamalar</h3>
+                    <p>sdfşjakljfadsajşlsdjafşsjfa</p>
+                </li>
+                
+                <li class="chapter-item">
+                    <h3>Bölüm 4: Basit Zamanlar ve Kipler</h3>
+                    <p>sdfşjakljfadsajşlsdjafşsjfa</p>
+                </li>
+            </ul>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <p>© 2023 DilEğitimi - Tüm hakları saklıdır.</p>
+            <ul class="footer-links">
+                <li><a href="gizlilik.html">Gizlilik Politikası</a></li>
+                <li><a href="kullanim.html">Kullanım Şartları</a></li>
+                <li><a href="iletisim.html">İletişim</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('searchResults');
+            
+            if (searchTerm === '') {
+                alert('Lütfen arama terimi girin.');
+                return;
+            }
+            
+            // Sayfa içeriğini al
+            const pageContent = document.body.innerText.toLowerCase();
+            const pageHTML = document.body.innerHTML;
+            
+            // Arama sonuçlarını temizle
+            resultsContainer.innerHTML = '';
+            
+            // Arama terimini içeren öğeleri bul
+            const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            const paragraphs = document.querySelectorAll('p, li, .chapter-item');
+            
+            let foundResults = false;
+            
+            // Başlıklarda arama
+            headings.forEach(heading => {
+                if (heading.innerText.toLowerCase().includes(searchTerm)) {
+                    foundResults = true;
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    
+                    // Vurgulama yap
+                    const highlightedText = heading.innerText.replace(
+                        new RegExp(searchTerm, 'gi'), 
+                        match => `<span class="search-highlight">${match}</span>`
+                    );
+                    
+                    resultItem.innerHTML = `
+                        <strong>Başlık:</strong> ${highlightedText}<br>
+                        <small>Konum: ${heading.tagName}</small>
+                    `;
+                    
+                    // Tıklanabilir yap
+                    resultItem.style.cursor = 'pointer';
+                    resultItem.onclick = () => {
+                        heading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    };
+                    
+                    resultsContainer.appendChild(resultItem);
+                }
+            });
+            
+            // Paragraflarda arama
+            paragraphs.forEach(paragraph => {
+                if (paragraph.innerText.toLowerCase().includes(searchTerm) && 
+                    !paragraph.querySelector('h1, h2, h3, h4, h5, h6')) {
+                    foundResults = true;
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    
+                    // İlk 100 karakteri al ve vurgula
+                    const text = paragraph.innerText;
+                    const index = text.toLowerCase().indexOf(searchTerm);
+                    const start = Math.max(0, index - 50);
+                    const end = Math.min(text.length, index + searchTerm.length + 100);
+                    let preview = text.substring(start, end);
+                    
+                    if (start > 0) preview = '...' + preview;
+                    if (end < text.length) preview = preview + '...';
+                    
+                    const highlightedPreview = preview.replace(
+                        new RegExp(searchTerm, 'gi'), 
+                        match => `<span class="search-highlight">${match}</span>`
+                    );
+                    
+                    resultItem.innerHTML = `
+                        <strong>İçerik:</strong> ${highlightedPreview}<br>
+                        <small>Konum: ${paragraph.tagName}</small>
+                    `;
+                    
+                    // Tıklanabilir yap
+                    resultItem.style.cursor = 'pointer';
+                    resultItem.onclick = () => {
+                        paragraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    };
+                    
+                    resultsContainer.appendChild(resultItem);
+                }
+            });
+            
+            if (!foundResults) {
+                resultsContainer.innerHTML = '<div class="no-results">Arama terimi bulunamadı.</div>';
+            }
+            
+            // Sonuçları göster
+            resultsContainer.style.display = 'block';
+            
+            // Sayfada vurgulama yap
+            highlightText(searchTerm);
+        }
+        
+        function highlightText(searchTerm) {
+            // Önceki vurgulamaları temizle
+            const existingHighlights = document.querySelectorAll('.search-highlight');
+            existingHighlights.forEach(highlight => {
+                const parent = highlight.parentNode;
+                parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                parent.normalize();
+            });
+            
+            // Metin düğümlerinde arama ve vurgulama
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            let node;
+            const nodesToHighlight = [];
+            
+            while (node = walker.nextNode()) {
+                if (node.parentNode.nodeName !== 'SCRIPT' && 
+                    node.parentNode.nodeName !== 'STYLE' &&
+                    node.textContent.toLowerCase().includes(searchTerm)) {
+                    nodesToHighlight.push(node);
+                }
+            }
+            
+            nodesToHighlight.forEach(node => {
+                const span = document.createElement('span');
+                span.className = 'search-highlight';
+                
+                const text = node.textContent;
+                const index = text.toLowerCase().indexOf(searchTerm);
+                const before = text.substring(0, index);
+                const highlight = text.substring(index, index + searchTerm.length);
+                const after = text.substring(index + searchTerm.length);
+                
+                const fragment = document.createDocumentFragment();
+                fragment.appendChild(document.createTextNode(before));
+                
+                const highlightSpan = document.createElement('span');
+                highlightSpan.className = 'search-highlight';
+                highlightSpan.textContent = highlight;
+                fragment.appendChild(highlightSpan);
+                fragment.appendChild(document.createTextNode(after));
+                
+                node.parentNode.replaceChild(fragment, node);
+            });
+        }
+        
+        // Enter tuşu ile arama
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>
