@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kürtçe Fiil Çekim Tablosu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+            min-width: 600px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            border: none;
+        }
+        
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s;
+        }
+        
+        tr:hover td {
+            background-color: #f8f9ff;
+        }
+        
+        .time-column {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #444;
+            text-align: left;
+            padding-left: 15px;
+            width: 200px;
+        }
+        
+        .verb-cell {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        /* Tablo footer stili */
+        .table-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.9em;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .table-footer p {
+            margin: 0;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Kürtçe Fiil Çekim Tablosu</h1>
+            <p class="subtitle">"Bûn" (olmak) fiilinin zamanlara göre çekimi</p>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zaman</th>
+                        <th>ez (ben)</th>
+                        <th>tu (sen)</th>
+                        <th>ew (o)</th>
+                        <th>em (biz)</th>
+                        <th>hûn (siz)</th>
+                        <th>ew (onlar)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-column">şimdiki zaman/dema niha (-yor)</td>
+                        <td class="verb-cell">dibime</td>
+                        <td class="verb-cell">dibîye</td>
+                        <td class="verb-cell">dibeye</td>
+                        <td class="verb-cell">dibine</td>
+                        <td class="verb-cell">dibine</td>
+                        <td class="verb-cell">dibine</td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">geniş zaman/dema fireh (-ar)</td>
+                        <td class="verb-cell">dibim</td>
+                        <td class="verb-cell">dibî</td>
+                        <td class="verb-cell">dibe</td>
+                        <td class="verb-cell">dibin</td>
+                        <td class="verb-cell">dibin</td>
+                        <td class="verb-cell">dibin</td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">gelecek zaman/dema bê (-acak)</td>
+                        <td class="verb-cell">(d)ê bibim</td>
+                        <td class="verb-cell">dê bibî</td>
+                        <td class="verb-cell">dê bibe</td>
+                        <td class="verb-cell">dê bibin</td>
+                        <td class="verb-cell">dê bibin</td>
+                        <td class="verb-cell">dê bibin</td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">yakın gelecek</td>
+                        <td class="verb-cell">dikim bibim</td>
+                        <td class="verb-cell">dikim bibî</td>
+                        <td class="verb-cell">dikim bibe</td>
+                        <td class="verb-cell">dikim bibin</td>
+                        <td class="verb-cell">dikim bibin</td>
+                        <td class="verb-cell">dikim bibin</td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">di'li geçmiş zaman (-idi)</td>
+                        <td class="verb-cell">bûm</td>
+                        <td class="verb-cell">bûyî</td>
+                        <td class="verb-cell">bû(ye)</td>
+                        <td class="verb-cell">bûn</td>
+                        <td class="verb-cell">bûn</td>
+                        <td class="verb-cell">bûn</td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">miş'li geçmiş zaman (-imiş)</td>
+                        <td class="verb-cell">bûme</td>
+                        <td class="verb-cell">bûyîye</td>
+                        <td class="verb-cell">bûye(ye)</td>
+                        <td class="verb-cell">bûne</td>
+                        <td class="verb-cell">bûne</td>
+                        <td class="verb-cell">bûne</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-caption">
+              <p>Kürtçe dil eğitimi materyali • Fiil çekim tablosu</p>
+        </div>
+
+
+        <div class="table-note">
+              <p>Kürtçe dil eğitimi materyali • Fiil çekim tablosu</p>
+        </div>
+      
+        <div class="table-note">
+          <p>Kürtçe dil eğitimi materyali • Fiil çekim tablosu</p>
+        </div>  
+      
+        <div class="table-meta">
+            <p>Kürtçe dil eğitimi materyali • Fiil çekim tablosu</p>
+        </div>
+
+      
+        <!-- Footer yerine table-footer kullanımı -->
+        <div class="table-footer">
+            <p>Kürtçe dil eğitimi materyali • Fiil çekim tablosu</p>
+        </div>
+    </div>
+</body>
+</html>
