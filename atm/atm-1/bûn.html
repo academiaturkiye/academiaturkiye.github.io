@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DilEğitimi - Ana Sayfa</title>
+    <style>
+        /* Genel Stil */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f6f8fa;
+            color: #24292e;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        header {
+            background-color: #24292e;
+            padding: 16px 0;
+            color: white;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 20px;
+            color: #ffffff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        /* Ana İçerik */
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0366d6;
+        }
+        
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .language-card {
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .language-card h3 {
+            color: #0366d6;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .level-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .level-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .level-list li:before {
+            content: "•";
+            color: #0366d6;
+            position: absolute;
+            left: 0;
+        }
+        
+        .level-list a {
+            color: #586069;
+            text-decoration: none;
+        }
+        
+        .level-list a:hover {
+            color: #0366d6;
+            text-decoration: underline;
+        }
+        
+        /* Seviye Sayfası */
+        .level-content {
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .level-content h2 {
+            color: #0366d6;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .chapter-list {
+            list-style: none;
+        }
+        
+        .chapter-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+        }
+        
+        .chapter-item h3 {
+            color: #24292e;
+            margin-bottom: 10px;
+        }
+        
+        .chapter-item p {
+            color: #586069;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #24292e;
+            padding: 30px 0;
+            color: #ffffff;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: #ffffff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .language-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>DilEğitimi</h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="ingilizce.html">İngilizce</a></li>
+                    <li><a href="ispanyolca.html">İspanyolca</a></li>
+                    <li><a href="sayfa2.html">Hakkında</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    <!-- Ana İçerik -->
+    <main class="main-content container">
+        <h1 class="page-title">Dil Öğrenme Platformuna Hoşgeldiniz</h1>
+        
+        <p style="text-align: center; margin-bottom: 30px; font-size: 18px;">
+            Kolay ve etkili bir şekilde dil öğrenmek için doğru yerdesiniz. Aşağıdaki dillerden birini seçerek öğrenmeye başlayın.
+        </p>
+        
+        <!-- Örnek Seviye İçeriği (Başlangıç) -->
+        <div class="level-content">
+            <h2>bûn fiilinin çekimi</h2>
+            
+            <ul class="chapter-list">
+                <li class="chapter-item">
+                    <h3><a href="dileksartkipi1.html">Bûn fiilinin basit zamanlarda çekimi</a></h3>
+                       geniş zaman, şimdiki zaman, geçmiş zaman, gelecek zaman 
+                </li>
+                
+                <li class="chapter-item">
+                    <h3>Bûn fiilinin bileşik zamanlarda çekimi</h3>
+                    <p>  geniş zaman + geçmiş zaman,  şimdiki zaman + geçmiş zaman, ......    </p>
+                </li>
+                
+                <li class="chapter-item">
+                    <h3>Bûn fiilinin dilek kipleri ile çekimi</h3>
+                    <p>  sdfşjakljfadsajşlsdjafşsjfa     </p>
+                </li>
+                
+                <li class="chapter-item">
+                    <h3>Bûn fiilinin zaman ve dilek kipleri ile çekimi</h3>
+                    <p>  sdfşjakljfadsajşlsdjafşsjfa     </p>
+                </li>
+            </ul>
+        </div>
+
+
+
+
+
+
+
+
+        
+
+
+        
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <p>© 2023 DilEğitimi - Tüm hakları saklıdır.</p>
+            <ul class="footer-links">
+                <li><a href="gizlilik.html">Gizlilik Politikası</a></li>
+                <li><a href="kullanim.html">Kullanım Şartları</a></li>
+                <li><a href="iletisim.html">İletişim</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
